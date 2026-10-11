@@ -56,15 +56,19 @@ copyFileSync(apk, target);
 console.log(`✓ APK → releases/sugarfather-${version}.apk`);
 
 // ④ version.json
+// 国内访问 GitHub 大文件受限，默认用加速代理作为主通道，官方地址作镜像。
+// 换代理只需改这里（或事后手改 version.json），无需重新打包 App。
+const PROXY = process.env.SF_PROXY ?? 'https://ghfast.top/';
+const rawUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/releases/sugarfather-${version}.apk`;
 const manifest = {
   versionCode: nextCode,
   versionName: version,
-  apkUrl: `https://raw.githubusercontent.com/${REPO}/${BRANCH}/releases/sugarfather-${version}.apk`,
-  apkUrlMirror: '',
+  apkUrl: PROXY + rawUrl,
+  apkUrlMirror: rawUrl,
   notes,
 };
 writeFileSync(join(ROOT, 'version.json'), JSON.stringify(manifest, null, 2) + '\n');
-console.log('✓ version.json 已更新');
+console.log('✓ version.json 已更新（主通道: ' + PROXY + '）');
 
 // ⑤ 提交推送
 execFileSync('git', ['add', '-A'], { cwd: ROOT, stdio: 'inherit' });

@@ -1,7 +1,8 @@
 {
   "versionCode": 4,
   "versionName": "2.3",
-  "apkUrl": "https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/releases/sugarfather-2.3.apk",
-  "apkUrlMirror": "",
-  "notes": "新增「检查更新」：可从本仓库直接下载新版安装包。V2.2 之前的更新：矢量图标、五槽居中底栏、提醒升级为一级 Tab、提醒卡一键补记、趋势图渐变面积"
+  "apkUrl": "https://ghfast.top/https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/releases/sugarfather-2.3.apk",
+  "apkUrlMirror": "https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/releases/sugarfather-2.3.apk",
+  "notes": "新增「检查更新」：可在 App 内直接下载新版安装包。此前更新：矢量图标、五槽居中底栏、提醒升级一级 Tab、提醒卡一键补记、趋势图渐变面积",
+  "comment": "apkUrl 走国内可访问的 GitHub 加速代理（ghfast.top），apkUrlMirror 为官方地址；换代理只需改本文件，无需重新打包 App"
 }
