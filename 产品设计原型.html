@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>糖记 · 产品设计原型 V1.1 适老化</title>
+<style>
+  /* ============ V1.1 适老化设计令牌 ============
+     基准字号 18px / 次要 16px / 可点区域 ≥60px / 对比度 ≥7:1（正文） */
+  :root{
+    --ink:#191d23; --sub:#49505e; --bg:#f2f4f6; --card:#ffffff;
+    --primary:#0b7d5e; --primary-deep:#085c45;
+    --green:#0e9c73; --green-bg:#dff4ea; --green-ink:#0a5c44;
+    --amber:#b45309; --amber-bg:#fdf0dc; --amber-ink:#8a4106;
+    --red:#c53030; --red-bg:#fdeaea; --red-ink:#a02020;
+    --line:#e3e7ec;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    font-size:18px;
+    background:linear-gradient(160deg,#e9edf2 0%,#dfe5ec 60%,#e7e3dd 100%);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;gap:36px;
+    padding:24px;color:var(--ink);
+  }
+  /* ============ 左侧说明面板（桌面） ============ */
+  .side{width:300px;flex:none;display:block}
+  .side h1{font-size:24px;margin-bottom:6px}
+  .side .ver{color:var(--sub);font-size:15px;margin-bottom:18px}
+  .side .card-note{background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.95);
+    border-radius:16px;padding:18px;font-size:15px;line-height:1.85;color:#333b48}
+  .side .card-note b{color:var(--ink)}
+  .side .legend{display:flex;gap:16px;margin-top:10px;font-size:14px;color:#3c4453}
+  .side .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px}
+  @media (max-width:900px){ .side{display:none} body{padding:0} }
+
+  /* ============ 手机 ============ */
+  .phone{width:390px;height:844px;max-height:96vh;flex:none;background:#000;border-radius:46px;
+    padding:10px;box-shadow:0 30px 70px rgba(20,30,45,.35),0 4px 14px rgba(20,30,45,.25);position:relative}
+  .screen{position:relative;width:100%;height:100%;background:var(--bg);border-radius:37px;overflow:hidden;display:flex;flex-direction:column}
+  @media (max-width:480px){
+    body{align-items:stretch;justify-content:stretch}
+    .phone{width:100%;height:100vh;max-height:none;border-radius:0;padding:0;box-shadow:none}
+    .screen{border-radius:0}
+  }
+  .statusbar{height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;
+    padding:0 22px;font-size:14px;font-weight:600;color:var(--ink);background:var(--bg)}
+  .statusbar .icons{letter-spacing:2px;font-size:12px}
+  .navbar{height:52px;flex:none;display:flex;align-items:center;justify-content:center;position:relative;background:var(--bg)}
+  .navbar .title{font-size:21px;font-weight:700}
+  .capsule{position:absolute;right:12px;top:11px;width:90px;height:32px;border:1px solid #c9cfd8;
+    background:rgba(255,255,255,.85);border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px}
+  .capsule .dot{width:7px;height:7px;border-radius:50%;background:#4a5260}
+  .capsule .bar{width:16px;height:6px;border-radius:3px;background:#4a5260}
+
+  .pages{flex:1;position:relative;overflow:hidden}
+  .page{position:absolute;inset:0;overflow-y:auto;padding:6px 14px 108px;display:none;scrollbar-width:none}
+  .page::-webkit-scrollbar{display:none}
+  .page.active{display:block}
+
+  /* Tab 栏：高 92px，文字 15px，图标 26px */
+  .tabbar{position:absolute;left:0;right:0;bottom:0;height:92px;background:#fff;
+    border-top:1px solid var(--line);display:flex;z-index:30;padding-bottom:12px}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    font-size:15px;color:#6a7280;background:none;border:none;cursor:pointer}
+  .tab svg{width:26px;height:26px;stroke:#6a7280;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .tab.active{color:var(--primary)} .tab.active svg{stroke:var(--primary);stroke-width:2.4}
+  .tab-plus{flex:none;width:84px;position:relative}
+  .plus-btn{position:absolute;left:50%;top:-18px;transform:translateX(-50%);width:68px;height:68px;border-radius:50%;
+    background:linear-gradient(145deg,var(--primary) 0%,#0e9c73 100%);border:none;color:#fff;font-size:40px;
+    line-height:1;box-shadow:0 6px 16px rgba(11,125,94,.45);cursor:pointer;font-weight:300}
+  .plus-btn:active{transform:translateX(-50%) scale(.93)}
+
+  /* ============ 通用组件 ============ */
+  .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(30,40,60,.06)}
+  .card h3{font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+  .card h3 .more{font-size:16px;color:var(--primary);font-weight:600;cursor:pointer}
+  .muted{color:var(--sub);font-size:16px}
+  .dot-i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;vertical-align:0}
+
+  /* 今天页 */
+  .today-head{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 12px}
+  .today-head .date{font-size:23px;font-weight:700}
+  .streak{display:flex;align-items:center;gap:6px;background:#fff3e0;color:#8a4106;font-size:16px;
+    font-weight:700;border-radius:14px;padding:8px 14px}
+  .remind{border-radius:18px;padding:16px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:center;
+    background:linear-gradient(135deg,#fff4e2,#fdefd8);border:2px solid #f0dcbb}
+  .remind .ricon{width:48px;height:48px;border-radius:12px;background:#f7dca6;display:flex;align-items:center;
+    justify-content:center;font-size:24px;flex:none}
+  .remind .rt{font-size:19px;font-weight:700;color:#6d4d0f}
+  .remind .rd{font-size:16px;color:#8a6d33;margin-top:3px;line-height:1.6}
+  .remind.ok{background:var(--green-bg);border-color:#bfe5d4}
+  .remind.ok .ricon{background:#b8e9d2}.remind.ok .rt{color:var(--green-ink)}.remind.ok .rd{color:#3c7a63}
+  .hero{position:relative}
+  .hero .top{display:flex;align-items:flex-start;justify-content:space-between}
+  .hero .period-chip{font-size:16px;font-weight:700;color:var(--primary-deep);background:var(--green-bg);
+    border-radius:12px;padding:6px 14px}
+  .hero .htime{font-size:16px;color:var(--sub);margin-bottom:6px}
+  .hero .val{font-size:72px;font-weight:700;line-height:1.05;letter-spacing:-1px}
+  .hero .val small{font-size:19px;font-weight:500;color:var(--sub);margin-left:6px}
+  .status-tag{display:inline-flex;align-items:center;gap:8px;font-size:18px;font-weight:700;
+    border-radius:12px;padding:7px 14px;margin-top:10px}
+  .st-ok{color:var(--green-ink);background:var(--green-bg)} .st-low{color:var(--amber-ink);background:var(--amber-bg)} .st-high{color:var(--red-ink);background:var(--red-bg)}
+  .rec-row{display:flex;align-items:center;gap:12px;padding:14px 2px;border-bottom:2px solid #f0f2f5;
+    cursor:pointer;min-height:76px}
+  .rec-row:last-child{border-bottom:none}
+  .rec-row .rt{flex:1}
+  .rec-row .rv{font-size:28px;font-weight:700;text-align:right}
+  .rec-row .rp{font-size:18px;font-weight:700}
+  .rec-row .rtime{font-size:16px;color:var(--sub);margin-top:3px}
+  .empty{border:2px dashed #c8cfd8;border-radius:16px;padding:26px 16px;text-align:center;color:var(--sub);font-size:17px;line-height:1.8}
+
+  /* 趋势页 */
+  .seg{display:flex;background:#e4e8ee;border-radius:14px;padding:4px;margin-bottom:14px}
+  .seg button{flex:1;border:none;background:none;font-size:17px;padding:13px 0;border-radius:11px;color:var(--sub);cursor:pointer}
+  .seg button.active{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .stat{background:var(--card);border-radius:16px;padding:14px 8px;text-align:center;box-shadow:0 1px 3px rgba(30,40,60,.06)}
+  .stat .sv{font-size:27px;font-weight:700}
+  .stat .sv small{font-size:14px;font-weight:500;color:var(--sub)}
+  .stat .sl{font-size:15px;color:var(--sub);margin-top:4px}
+  .stat-sub{font-size:16px;color:var(--sub);text-align:center;margin:12px 0 0}
+  .pa-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:2px solid #f0f2f5;min-height:64px}
+  .pa-row:last-child{border-bottom:none}
+  .pa-row .pl{width:78px;font-size:17px;font-weight:700;flex:none}
+  .pa-row .bar-wrap{flex:1;height:14px;background:#eceff3;border-radius:7px;overflow:hidden}
+  .pa-row .bar{height:100%;border-radius:7px}
+  .pa-row .pv{width:120px;text-align:right;font-size:15px;flex:none;color:var(--sub)}
+  .pa-row .pv b{font-size:20px;color:var(--ink)}
+  .chart-detail{font-size:16px;color:var(--sub);text-align:center;min-height:24px;margin-top:8px;line-height:1.6}
+  .his-group{font-size:16px;color:var(--sub);font-weight:700;margin:12px 2px 2px}
+  .fold-more{width:100%;border:none;background:#eef3f0;color:var(--primary);font-size:17px;font-weight:600;
+    border-radius:14px;padding:14px 0;margin-top:12px;cursor:pointer}
+
+  /* 我的页 */
+  .profile{display:flex;align-items:center;gap:14px}
+  .avatar{width:62px;height:62px;border-radius:50%;background:linear-gradient(145deg,#0e9c73,#0b7d5e);
+    color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .profile .pname{font-size:19px;font-weight:700}
+  .sync-ok{color:var(--primary);font-weight:700;font-size:16px}
+  .menu-row{display:flex;align-items:center;gap:12px;padding:16px 2px;border-bottom:2px solid #f0f2f5;
+    cursor:pointer;min-height:80px}
+  .menu-row:last-child{border-bottom:none}
+  .menu-row .mi{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+  .menu-row .mt{flex:1;font-size:18px;font-weight:600}
+  .menu-row .arrow{color:#8a93a3;font-size:22px}
+  .target-editor{padding:14px 0 6px;display:none}
+  .target-editor.open{display:block}
+  .tg-line{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:17px}
+  .tg-line .lab{width:78px;color:var(--sub)}
+  .tg-line input{width:96px;border:2px solid var(--line);border-radius:12px;padding:12px 6px;text-align:center;font-size:21px}
+  .tg-line input:focus{border-color:var(--primary);outline:none}
+  .btn{border:none;border-radius:14px;padding:14px 22px;font-size:17px;cursor:pointer;font-weight:700}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:#e3efe9;color:var(--primary)}
+  .disclaim{font-size:14px;color:#5a6270;line-height:1.8;padding:4px 8px 12px;text-align:center}
+
+  /* ============ 录入 Sheet（两步） ============ */
+  .mask{position:absolute;inset:0;background:rgba(15,20,30,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+  .mask.show{opacity:1;pointer-events:auto}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;z-index:50;
+    transform:translateY(105%);transition:transform .28s cubic-bezier(.32,.72,.35,1);
+    max-height:92%;overflow-y:auto;padding:10px 18px 26px;scrollbar-width:none}
+  .sheet::-webkit-scrollbar{display:none}
+  .sheet.open{transform:translateY(0)}
+  .sheet .grab{width:40px;height:5px;border-radius:3px;background:#d8dde4;margin:4px auto 10px}
+  .sheet .shead{display:flex;align-items:center;justify-content:space-between}
+  .sheet .stitle{font-size:20px;font-weight:700}
+  .sheet .close{border:none;background:#eceff3;color:#4a5260;width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer}
+  .step-ind{font-size:16px;color:var(--sub);margin:6px 0 12px;font-weight:600}
+  .val-display-row{display:flex;align-items:center;justify-content:center;gap:14px;
+    background:#f6f8fa;border-radius:18px;padding:18px 16px;min-height:118px}
+  .val-display{font-size:64px;font-weight:700;line-height:1;letter-spacing:-1px;min-width:170px;text-align:right}
+  .val-display.placeholder{color:#b3bac4}
+  .val-unit2{font-size:19px;color:var(--sub);text-align:left;line-height:1.5}
+  .live-status{display:flex;align-items:center;gap:9px;font-size:17px;margin:14px 0 4px;min-height:26px;font-weight:600}
+  .quick-chips{display:flex;gap:10px;margin:10px 0 4px;flex-wrap:wrap}
+  .qchip{border:2px solid var(--line);background:#f7f9fa;border-radius:14px;padding:11px 20px;font-size:18px;
+    color:#333b48;cursor:pointer;font-weight:600}
+  .qchip:active{background:var(--green-bg);border-color:var(--primary)}
+  .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+  .key{height:64px;border:2px solid var(--line);background:#fff;border-radius:16px;font-size:27px;
+    color:var(--ink);cursor:pointer;font-weight:600;font-family:inherit}
+  .key:active{background:var(--green-bg);border-color:var(--primary)}
+  .key.fn{background:#eceff3;color:#333b48}
+  .big-btn{width:100%;border:none;background:linear-gradient(145deg,var(--primary),#0e9c73);color:#fff;
+    font-size:21px;font-weight:700;border-radius:18px;padding:19px 0;margin-top:16px;cursor:pointer}
+  .big-btn:disabled{background:#c3cdc8;cursor:not-allowed}
+  .back-btn{width:100%;border:none;background:#eceff3;color:#333b48;font-size:18px;font-weight:600;
+    border-radius:14px;padding:14px 0;cursor:pointer;margin-bottom:14px}
+  .sum-row{display:flex;align-items:baseline;gap:10px;background:#f6f8fa;border-radius:18px;padding:14px 18px}
+  .sum-val{font-size:48px;font-weight:700;line-height:1.1}
+  .sum-unit{font-size:18px;color:var(--sub)}
+  .sum-status{margin-left:auto;font-size:18px;font-weight:700;border-radius:12px;padding:6px 14px}
+  .ss-ok{color:var(--green-ink);background:var(--green-bg)} .ss-low{color:var(--amber-ink);background:var(--amber-bg)} .ss-high{color:var(--red-ink);background:var(--red-bg)}
+  .sec-lab{font-size:16px;color:var(--sub);margin:16px 0 10px;font-weight:700}
+  .period-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .pchip{border:2.5px solid var(--line);background:#fff;border-radius:16px;min-height:66px;text-align:center;
+    font-size:20px;cursor:pointer;position:relative;color:#333b48;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .pchip.sel{border-color:var(--primary);background:var(--green-bg);color:var(--primary-deep);font-weight:700}
+  .pchip .rec-flag{position:absolute;top:-12px;right:10px;background:var(--primary);color:#fff;font-size:13px;
+    border-radius:10px;padding:2px 10px;font-weight:600}
+  .fold-btn{width:100%;border:none;background:none;color:var(--primary);font-size:17px;font-weight:600;
+    padding:14px 0 2px;cursor:pointer}
+  .more-box{display:none;padding-bottom:4px}
+  .more-box.open{display:block}
+  .time-row{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:14px 15px}
+  .time-row .tt{flex:1;font-size:18px;font-weight:700}
+  .time-row input{border:none;outline:none;font-size:16px;color:var(--primary);background:none;cursor:pointer;font-family:inherit;font-weight:600}
+  .note-input{width:100%;border:2px solid var(--line);border-radius:14px;padding:14px 15px;font-size:18px;
+    outline:none;font-family:inherit}
+  .note-input:focus{border-color:var(--primary)}
+  .del-btn{width:100%;border:2px solid #f0c7c7;background:var(--red-bg);color:var(--red-ink);font-size:18px;
+    font-weight:600;padding:15px 0;border-radius:16px;cursor:pointer;display:none;margin-top:16px}
+
+  /* toast：3 秒、17px */
+  .toast{position:absolute;left:50%;bottom:120px;transform:translateX(-50%) translateY(16px);background:rgba(25,32,43,.94);
+    color:#fff;font-size:17px;border-radius:18px;padding:14px 22px;opacity:0;transition:all .25s;z-index:90;pointer-events:none;
+    white-space:nowrap;max-width:88%}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .err-banner{position:absolute;top:80px;left:14px;right:14px;background:var(--red-bg);color:var(--red-ink);
+    border-radius:14px;padding:12px;font-size:16px;z-index:99;display:none}
+</style>
+</head>
+<body>
+
+<!-- 左侧说明（仅桌面显示） -->
+<aside class="side">
+  <h1>糖记 · 适老化原型</h1>
+  <div class="ver">V1.1 · 2026-09-27 · 65+ 全量适老化 · 对应 PRD V1.1</div>
+  <div class="card-note">
+    <b>按 65 岁以上用户标准重做</b>：<br>
+    · 正文 18px / 次要 16px，核心数字 48–72px<br>
+    · 所有可点区域 ≥60px，间距 ≥12px<br>
+    · 深色高对比文字，颜色+文字双编码<br>
+    · 录入改<b>两步</b>：大号数字键盘 → 大按钮选时段 → 保存<br>
+    · 备注、改时间收进「更多选项」，补记才展开<br><br>
+    可交互：底部 <b>今天 / 趋势 / 我的</b> 切换；点 ＋ 走两步录入；点记录行可改/删；趋势页切 7/30/90 天；我的页改目标范围、复制导出。预置 35 天演示数据。
+    <div class="legend">
+      <span><i style="background:var(--green)"></i>达标</span>
+      <span><i style="background:var(--amber)"></i>偏低</span>
+      <span><i style="background:var(--red)"></i>偏高</span>
+    </div>
+  </div>
+</aside>
+
+<!-- 手机 -->
+<div class="phone">
+  <div class="screen">
+    <div class="statusbar"><span id="sb-time">9:41</span><span class="icons">●●●ᯤ▮</span></div>
+    <div class="navbar"><span class="title">糖记</span>
+      <div class="capsule"><span class="dot"></span><span class="bar"></span></div>
+    </div>
+    <div class="err-banner" id="err-banner"></div>
+
+    <div class="pages">
+      <!-- ============ 今天 ============ -->
+      <section class="page active" id="page-today">
+        <div class="today-head">
+          <div class="date" id="today-date">—</div>
+          <div class="streak" id="streak">🔥 连续 0 天</div>
+        </div>
+        <div class="remind" id="remind"></div>
+        <div class="card hero" id="hero"></div>
+        <div class="card">
+          <h3>今日记录 <span class="muted" id="today-count"></span></h3>
+          <div id="today-list"></div>
+        </div>
+        <div class="card">
+          <h3>近 7 天趋势 <span class="more" data-goto="trend">看完整趋势 →</span></h3>
+          <div id="sparkline"></div>
+        </div>
+      </section>
+
+      <!-- ============ 趋势 ============ -->
+      <section class="page" id="page-trend">
+        <div class="seg" id="range-seg">
+          <button data-days="7" class="active">近7天</button>
+          <button data-days="30">近30天</button>
+          <button data-days="90">近90天</button>
+        </div>
+        <div class="card">
+          <h3>血糖趋势 <span class="muted" id="chart-sub"></span></h3>
+          <div id="trend-chart"></div>
+          <div class="chart-detail" id="chart-detail">点图上的圆点，看那一次的详情</div>
+        </div>
+        <div class="stat-grid" id="stat-grid"></div>
+        <div class="stat-sub" id="stat-sub"></div>
+        <div class="card" style="margin-top:14px">
+          <h3>各时段平均 <span class="muted" id="pa-sub"></span></h3>
+          <div id="period-avg"></div>
+          <div class="muted" style="margin-top:10px;line-height:1.7">「空腹」按空腹目标判断，其余按非空腹目标判断</div>
+        </div>
+        <div class="card">
+          <h3>历史记录 <span class="muted" id="his-sub"></span></h3>
+          <div id="history-list"></div>
+          <button class="fold-more" id="btn-his-more">展开更多记录 ▾</button>
+        </div>
+      </section>
+
+      <!-- ============ 我的 ============ -->
+      <section class="page" id="page-mine">
+        <div class="card profile">
+          <div class="avatar">糖</div>
+          <div>
+            <div class="pname">糖友（演示账号）</div>
+            <div class="muted" style="margin-top:4px;font-size:16px">微信用户 · <span class="sync-ok">● 云端同步已开启</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="menu-row" id="menu-target">
+            <div class="mi" style="background:var(--green-bg)">🎯</div>
+            <div class="mt">目标范围设置</div><div class="arrow">›</div>
+          </div>
+          <div class="target-editor" id="target-editor">
+            <div class="tg-line"><span class="lab">空腹</span>
+              <input type="number" step="0.1" id="tg-f-lo"> ~ <input type="number" step="0.1" id="tg-f-hi"> mmol/L</div>
+            <div class="tg-line"><span class="lab">非空腹</span>
+              <input type="number" step="0.1" id="tg-n-lo"> ~ <input type="number" step="0.1" id="tg-n-hi"> mmol/L</div>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn-primary" id="tg-save">保存</button>
+              <button class="btn btn-ghost" id="tg-reset">恢复默认</button>
+            </div>
+          </div>
+          <div class="menu-row" id="menu-export">
+            <div class="mi" style="background:#e3edfa">📋</div>
+            <div class="mt">复制全部数据（看病时给医生）</div><div class="arrow">›</div>
+          </div>
+          <div class="menu-row" id="menu-reseed">
+            <div class="mi" style="background:var(--amber-bg)">↺</div>
+            <div class="mt">重置演示数据</div><div class="arrow">›</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="menu-row" style="min-height:72px">
+            <div class="mi" style="background:#eceff3">ℹ️</div>
+            <div class="mt">版本</div><div class="muted">V1.1 适老化原型</div>
+          </div>
+        </div>
+        <div class="disclaim">本工具只做记录和参考，不能代替医生诊断。<br>血糖管理请听医生的话，数值异常请及时就医。</div>
+      </section>
+    </div>
+
+    <!-- Tab 栏 -->
+    <div class="tabbar">
+      <button class="tab active" data-tab="today">
+        <svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg>今天</button>
+      <button class="tab" data-tab="trend">
+        <svg viewBox="0 0 24 24"><path d="M3 17l4-6 4 3 5-8 5 5"/><path d="M3 21h18"/></svg>趋势</button>
+      <div class="tab-plus"><button class="plus-btn" id="btn-plus">+</button></div>
+      <button class="tab" data-tab="mine">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5"/></svg>我的</button>
+    </div>
+
+    <!-- 遮罩 + 两步录入 Sheet -->
+    <div class="mask" id="mask"></div>
+    <div class="sheet" id="sheet">
+      <div class="grab"></div>
+      <div class="shead">
+        <div class="stitle" id="sheet-title">记一笔血糖</div>
+        <button class="close" id="sheet-close">✕</button>
+      </div>
+      <div class="step-ind" id="step-ind">第 1 步，共 2 步：输入数值</div>
+
+      <!-- 第 1 步：数值 -->
+      <div id="step1">
+        <div class="val-display-row">
+          <div class="val-display placeholder" id="val-display">0.0</div>
+          <div class="val-unit2">mmol/L<br><span style="font-size:16px">血糖数值</span></div>
+        </div>
+        <div class="live-status" id="live-status-1"></div>
+        <div class="quick-chips" id="quick-chips"></div>
+        <div class="keypad" id="keypad"></div>
+        <button class="big-btn" id="btn-next" disabled>下一步：选时段</button>
+      </div>
+
+      <!-- 第 2 步：时段 + 保存 -->
+      <div id="step2" style="display:none">
+        <button class="back-btn" id="btn-back">‹ 上一步，改数值</button>
+        <div class="sum-row">
+          <div class="sum-val" id="sum-val">0.0</div>
+          <div class="sum-unit">mmol/L</div>
+          <div class="sum-status" id="sum-status" style="display:none"></div>
+        </div>
+        <div class="sec-lab">测量时段（已按时间推荐，点一下就能改）</div>
+        <div class="period-grid2" id="period-grid"></div>
+        <button class="big-btn" id="btn-save" disabled>保存</button>
+        <button class="fold-btn" id="btn-more">更多选项 ▾　修改时间 / 写备注</button>
+        <div class="more-box" id="more-box">
+          <div class="sec-lab">测量时间（补记才需要改）</div>
+          <div class="time-row">
+            <span class="tt" id="time-display">—</span>
+            <input type="datetime-local" id="time-input">
+          </div>
+          <div class="sec-lab">备注（可不填）</div>
+          <input class="note-input" id="note-input" maxlength="200" placeholder="例：吃了两个包子 / 散步 40 分钟">
+        </div>
+        <button class="del-btn" id="btn-del">删除这条记录</button>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ==================== 常量与工具 ==================== */
+var STORE_KEY = 'sugarfather-proto-v2';
+var DEFAULT_TARGETS = { fasting:[4.4,7.0], nonFasting:[4.4,10.0] };
+var PERIODS = [
+  {id:'fasting',       label:'空腹',   tgt:'fasting',    win:[4,9],    due:9.5},
+  {id:'afterBreakfast',label:'早餐后', tgt:'nonFasting', win:[9,11],   due:11},
+  {id:'beforeLunch',   label:'午餐前', tgt:'nonFasting', win:[11,13],  due:13},
+  {id:'afterLunch',    label:'午餐后', tgt:'nonFasting', win:[13,16],  due:16},
+  {id:'beforeDinner',  label:'晚餐前', tgt:'nonFasting', win:[16,19],  due:19},
+  {id:'afterDinner',   label:'晚餐后', tgt:'nonFasting', win:[19,22],  due:22},
+  {id:'bedtime',       label:'睡前',   tgt:'nonFasting', win:[22,24],  due:24},
+  {id:'random',        label:'随机',   tgt:'nonFasting', win:[0,24],   due:25}
+];
+function pById(id){ for(var i=0;i<PERIODS.length;i++) if(PERIODS[i].id===id) return PERIODS[i]; return PERIODS[7]; }
+function pad(n){ return (n<10?'0':'')+n; }
+function dayKey(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function fmtMD(d){ return (d.getMonth()+1)+'月'+d.getDate()+'日'; }
+function fmtHM(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); }
+function fmtDT(d){ return fmtMD(d)+' '+fmtHM(d); }
+var WEEK=['日','一','二','三','四','五','六'];
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+/* ==================== 数据层 ==================== */
+var db = { records:[], targets:JSON.parse(JSON.stringify(DEFAULT_TARGETS)) };
+function statusOf(value, tgtKey){
+  var t = db.targets[tgtKey]||db.targets.nonFasting;
+  if(value < t[0]) return 'low';
+  if(value > t[1]) return 'high';
+  return 'ok';
+}
+var ST_TXT = {ok:'达标', low:'偏低', high:'偏高'};
+var ST_COLOR = {ok:'#0e9c73', low:'#b45309', high:'#c53030'};
+var ST_CLS = {ok:'ss-ok', low:'ss-low', high:'ss-high'};
+
+function seedData(){
+  var rnd = mulberry32(20260927);
+  var now = new Date(); var recs = [];
+  var NOTE_POOL = ['','','','','','吃了饺子','散步40分钟后','昨晚睡得晚','换了个新血糖仪','空腹没喝水'];
+  function add(dayOff, periodId, minutes, value){
+    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate()-dayOff,
+      Math.floor(minutes/60), Math.floor(minutes%60));
+    var p = pById(periodId);
+    recs.push({ id:'r'+dayOff+'-'+periodId+'-'+Math.floor(rnd()*1e6),
+      value:Math.round(value*10)/10, period:p.id, note:NOTE_POOL[Math.floor(rnd()*NOTE_POOL.length)],
+      measuredAt:d.getTime(), createdAt:d.getTime() });
+  }
+  var GEN = [
+    {id:'fasting',        prob:.85, min:390,  span:70,  base:5.2, amp:2.6, hiRisk:.15},
+    {id:'afterBreakfast', prob:.70, min:540,  span:45,  base:6.8, amp:3.4, hiRisk:.12},
+    {id:'beforeLunch',    prob:.15, min:670,  span:80,  base:5.0, amp:2.2, hiRisk:.05},
+    {id:'afterLunch',     prob:.45, min:800,  span:70,  base:6.5, amp:3.0, hiRisk:.10},
+    {id:'beforeDinner',   prob:.15, min:990,  span:90,  base:5.0, amp:2.4, hiRisk:.05},
+    {id:'afterDinner',    prob:.65, min:1160, span:80,  base:6.8, amp:3.8, hiRisk:.14},
+    {id:'bedtime',        prob:.30, min:1320, span:60,  base:5.4, amp:2.4, hiRisk:.06}
+  ];
+  for(var day=35; day>=1; day--){
+    GEN.forEach(function(g){
+      var p = (day<=7) ? Math.max(g.prob,.4) : g.prob;
+      if(rnd() < p){
+        var v = g.base + rnd()*g.amp;
+        if(rnd() < g.hiRisk) v += 1.8;
+        add(day, g.id, g.min + rnd()*g.span, v);
+      }
+    });
+  }
+  var t = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 12);
+  if(t.getTime() > now.getTime()) t = new Date(now.getTime() - 40*60*1000);
+  recs.push({ id:'r-today-demo', value:9.1, period:'afterBreakfast', note:'豆浆油条',
+    measuredAt:t.getTime(), createdAt:t.getTime() });
+  recs.sort(function(a,b){ return a.measuredAt - b.measuredAt; });
+  return recs;
+}
+function load(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw){ var o = JSON.parse(raw);
+      if(o && Array.isArray(o.records)) { db.records = o.records; db.targets = o.targets || JSON.parse(JSON.stringify(DEFAULT_TARGETS)); return; } }
+  }catch(e){}
+  db.records = seedData(); db.targets = JSON.parse(JSON.stringify(DEFAULT_TARGETS)); persist();
+}
+function persist(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify({records:db.records, targets:db.targets})); }catch(e){} }
+
+/* ==================== 统计 ==================== */
+function recordsInRange(days){
+  var start = new Date(); start.setHours(0,0,0,0); start.setDate(start.getDate()-(days-1));
+  return db.records.filter(function(r){ return r.measuredAt >= start.getTime(); });
+}
+function statOf(list){
+  if(!list.length) return null;
+  var sum=0, ok=0, max=list[0], min=list[0];
+  list.forEach(function(r){
+    sum += r.value;
+    if(statusOf(r.value, pById(r.period).tgt)==='ok') ok++;
+    if(r.value>max.value) max=r;
+    if(r.value<min.value) min=r;
+  });
+  return { avg:sum/list.length, tir:ok/list.length, count:list.length, max:max, min:min };
+}
+function streakDays(){
+  var set = {}; db.records.forEach(function(r){ set[dayKey(new Date(r.measuredAt))]=1; });
+  var d = new Date(); var n = 0;
+  if(!set[dayKey(d)]) d.setDate(d.getDate()-1);
+  while(set[dayKey(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function missingPeriodsToday(){
+  var now = new Date(); var h = now.getHours()+now.getMinutes()/60;
+  var have = {}; db.records.forEach(function(r){
+    if(dayKey(new Date(r.measuredAt))===dayKey(now)) have[r.period]=1; });
+  var miss = [];
+  PERIODS.forEach(function(p){ if(p.id!=='random' && h>=p.due && !have[p.id]) miss.push(p.label); });
+  return miss;
+}
+function periodAverages(list){
+  return PERIODS.map(function(p){
+    var arr = list.filter(function(r){ return r.period===p.id; });
+    if(!arr.length) return {p:p, avg:null, count:0};
+    var s=0; arr.forEach(function(r){ s+=r.value; });
+    return { p:p, avg:s/arr.length, count:arr.length };
+  });
+}
+function dailyMeans(list){
+  var byDay = {};
+  list.forEach(function(r){ var k=dayKey(new Date(r.measuredAt)); (byDay[k]=byDay[k]||[]).push(r.value); });
+  return Object.keys(byDay).sort().map(function(k){
+    var arr=byDay[k]; var s=0; arr.forEach(function(v){ s+=v; });
+    var d = new Date(k.replace(/-/g,'/')); d.setHours(12,0,0,0);
+    return { key:k, date:d, avg:s/arr.length };
+  });
+}
+
+/* ==================== 渲染：今天 ==================== */
+function $(s){ return document.querySelector(s); }
+function el(html){ var d=document.createElement('div'); d.innerHTML=html; return d.firstElementChild; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg){
+  var t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t=setTimeout(function(){ t.classList.remove('show'); },3000);
+}
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(function(b){ b.classList.toggle('active', b.dataset.tab===name); });
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.toggle('active', p.id==='page-'+name); });
+  if(name==='trend') renderTrend();
+  if(name==='today') renderToday();
+}
+function renderToday(){
+  var now = new Date();
+  $('#today-date').textContent = fmtMD(now)+' 周'+WEEK[now.getDay()];
+  $('#streak').textContent = '🔥 连续 '+streakDays()+' 天';
+
+  var miss = missingPeriodsToday();
+  var remind = $('#remind');
+  if(miss.length===0){
+    remind.className='remind ok';
+    remind.innerHTML = '<div class="ricon">✓</div><div><div class="rt">今天的时段都记完啦</div>'+
+      '<div class="rd">已经连续记录 '+streakDays()+' 天，真棒</div></div>';
+  }else{
+    remind.className='remind';
+    remind.innerHTML = '<div class="ricon">⏰</div><div><div class="rt">还有 '+miss.length+' 个时段没记</div>'+
+      '<div class="rd">'+miss.join('、')+' —— 测完点下面的 ＋ 记一笔</div></div>';
+  }
+
+  var latest = db.records[db.records.length-1];
+  var hero = $('#hero');
+  if(latest){
+    var p = pById(latest.period); var st = statusOf(latest.value, p.tgt);
+    var t = db.targets[p.tgt];
+    hero.innerHTML =
+      '<div class="top"><div><div class="htime">最近一次 · '+fmtDT(new Date(latest.measuredAt))+'</div>'+
+      '<div class="val" style="color:'+(st==='ok'?'var(--ink)':ST_COLOR[st])+'">'+latest.value.toFixed(1)+'<small>mmol/L</small></div>'+
+      '<span class="status-tag st-'+st+'">'+ST_TXT[st]+'（'+p.label+'目标 '+t[0].toFixed(1)+'–'+t[1].toFixed(1)+'）</span></div>'+
+      '<span class="period-chip">'+p.label+'</span></div>'+
+      (latest.note?'<div class="muted" style="margin-top:10px">备注：'+esc(latest.note)+'</div>':'');
+  }else{
+    hero.innerHTML = '<div class="empty">还没有记录<br>点下面的 ＋ 记第一笔</div>';
+  }
+
+  var todays = db.records.filter(function(r){ return dayKey(new Date(r.measuredAt))===dayKey(now); })
+                         .sort(function(a,b){ return b.measuredAt-a.measuredAt; });
+  $('#today-count').textContent = todays.length?('共 '+todays.length+' 条'):'';
+  var list = $('#today-list');
+  if(!todays.length){ list.innerHTML = '<div class="empty">今天还没有记录<br>测完血糖点下方 ＋，很快记完</div>'; }
+  else list.innerHTML = todays.map(recRowHTML).join('');
+
+  renderSparkline();
+}
+function recRowHTML(r){
+  var p=pById(r.period), st=statusOf(r.value,p.tgt);
+  return '<div class="rec-row" data-id="'+r.id+'">'+
+    '<span class="dot-i" style="background:'+ST_COLOR[st]+'"></span>'+
+    '<div class="rt"><div class="rp">'+p.label+(r.note?' <span class="muted" style="font-weight:400;font-size:16px">· '+esc(r.note)+'</span>':'')+'</div>'+
+    '<div class="rtime">'+fmtHM(new Date(r.measuredAt))+' · '+ST_TXT[st]+'</div></div>'+
+    '<div class="rv" style="color:'+(st==='ok'?'var(--ink)':ST_COLOR[st])+'">'+r.value.toFixed(1)+'</div></div>';
+}
+function renderSparkline(){
+  var list = recordsInRange(7); var means = dailyMeans(list);
+  var box = $('#sparkline');
+  if(means.length<2){ box.innerHTML='<div class="empty" style="padding:14px">再记几天，这里会出现 7 天趋势线</div>'; return; }
+  var W=Math.max(300, box.clientWidth||320), H=84, pad=8;
+  var lo=3, hi=Math.max(12, Math.max.apply(null, means.map(function(m){return m.avg;}))+1);
+  var x0=means[0].date.getTime(), x1=means[means.length-1].date.getTime();
+  var pts = means.map(function(m){
+    return [ pad+(m.date.getTime()-x0)/(x1-x0||1)*(W-2*pad), H-pad-(m.avg-lo)/(hi-lo)*(H-2*pad) ]; });
+  var bandTop = H-pad-(db.targets.nonFasting[1]-lo)/(hi-lo)*(H-2*pad);
+  var bandBot = H-pad-(db.targets.nonFasting[0]-lo)/(hi-lo)*(H-2*pad);
+  var poly = pts.map(function(pt){ return pt[0].toFixed(1)+','+pt[1].toFixed(1); }).join(' ');
+  var last = pts[pts.length-1];
+  box.innerHTML = '<svg width="100%" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+
+    '<rect x="0" y="'+bandTop.toFixed(1)+'" width="'+W+'" height="'+(bandBot-bandTop).toFixed(1)+'" fill="#0e9c73" opacity="0.10"/>'+
+    '<polyline points="'+poly+'" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linejoin="round"/>'+
+    '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="4.5" fill="var(--primary)"/>'+
+    '</svg><div class="muted">绿底是目标范围 · 每天1个点（日平均）</div>';
+}
+
+/* ==================== 渲染：趋势 ==================== */
+var curDays = 7;
+var hisExpanded = false;
+function renderTrend(){
+  document.querySelectorAll('#range-seg button').forEach(function(b){
+    b.classList.toggle('active', +b.dataset.days===curDays); });
+  var list = recordsInRange(curDays);
+  var s = statOf(list);
+  $('#chart-sub').textContent = '近'+curDays+'天 · '+list.length+' 次';
+  renderTrendChart(list);
+  var grid = $('#stat-grid');
+  if(!s){
+    grid.innerHTML=''; $('#stat-sub').textContent='';
+    $('#period-avg').innerHTML='<div class="empty">这段时间还没有记录</div>';
+    $('#history-list').innerHTML=''; $('#btn-his-more').style.display='none'; return;
+  }
+  var cards = [
+    ['平均血糖', s.avg.toFixed(1), ' mmol/L'],
+    ['达标比例', Math.round(s.tir*100)+'<small> %</small>', ''],
+    ['最高 / 最低', s.max.value.toFixed(1)+'<small> / '+s.min.value.toFixed(1)+'</small>', ' mmol/L']
+  ];
+  grid.innerHTML = cards.map(function(c){
+    return '<div class="stat"><div class="sv">'+c[1]+'<small>'+c[2]+'</small></div><div class="sl">'+c[0]+'</div></div>'; }).join('');
+  $('#stat-sub').textContent = '共 '+s.count+' 次记录 · 连续记录 '+streakDays()+' 天 · 达标比例 = 在目标范围内的次数占比';
+  renderPeriodAvg(list);
+  renderHistory();
+}
+function renderTrendChart(list){
+  var box = $('#trend-chart');
+  if(!list.length){ box.innerHTML='<div class="empty">这段时间还没有记录</div>'; return; }
+  var W = Math.max(300, box.clientWidth||320), H=250, padL=40, padR=12, padT=18, padB=30;
+  var vals = list.map(function(r){ return r.value; });
+  var lo = Math.min(3, Math.min.apply(null,vals)-.5), hi = Math.max(12, Math.max.apply(null,vals)+.5);
+  var x0 = list[0].measuredAt, x1 = list[list.length-1].measuredAt;
+  function X(t){ return padL + (t-x0)/(x1-x0||1)*(W-padL-padR); }
+  function Y(v){ return H-padB - (v-lo)/(hi-lo)*(H-padT-padB); }
+  var means = dailyMeans(list);
+  var bandT = Y(db.targets.nonFasting[1]), bandB = Y(db.targets.nonFasting[0]);
+  var fHi = Y(db.targets.fasting[1]);
+  var svg = '<svg width="100%" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
+  svg += '<rect x="'+padL+'" y="'+bandT.toFixed(1)+'" width="'+(W-padL-padR)+'" height="'+(bandB-bandT).toFixed(1)+'" fill="#0e9c73" opacity="0.11"/>';
+  var step = (hi-lo)>8 ? 4 : 2;
+  for(var v=Math.ceil(lo); v<=hi; v+=step){
+    svg += '<line x1="'+padL+'" y1="'+Y(v)+'" x2="'+(W-padR)+'" y2="'+Y(v)+'" stroke="#eef1f5" stroke-width="1.5"/>'+
+           '<text x="'+(padL-7)+'" y="'+(Y(v)+5)+'" font-size="13" fill="#6a7280" text-anchor="end">'+v+'</text>';
+  }
+  svg += '<line x1="'+padL+'" y1="'+fHi+'" x2="'+(W-padR)+'" y2="'+fHi+'" stroke="#0b7d5e" stroke-width="1.5" stroke-dasharray="5 5" opacity=".65"/>';
+  svg += '<text x="'+(W-padR)+'" y="'+(fHi-5)+'" font-size="12" fill="#0b7d5e" text-anchor="end">空腹上限 '+db.targets.fasting[1].toFixed(1)+'</text>';
+  if(means.length>1){
+    var poly = means.map(function(m){ return X(m.date.getTime()).toFixed(1)+','+Y(m.avg).toFixed(1); }).join(' ');
+    svg += '<polyline points="'+poly+'" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>';
+  }
+  list.forEach(function(r){
+    var st = statusOf(r.value, pById(r.period).tgt);
+    svg += '<circle data-rid="'+r.id+'" cx="'+X(r.measuredAt).toFixed(1)+'" cy="'+Y(r.value).toFixed(1)+
+      '" r="'+(curDays>30?3.5:5)+'" fill="'+ST_COLOR[st]+'" stroke="#fff" stroke-width="1.5" style="cursor:pointer"/>';
+  });
+  var ticks = Math.min(curDays>60?6:4, list.length);
+  for(var i=0;i<ticks;i++){
+    var idx = Math.floor(i*(list.length-1)/Math.max(1,ticks-1));
+    var r0 = new Date(list[idx].measuredAt);
+    svg += '<text x="'+X(r0.getTime()).toFixed(1)+'" y="'+(H-8)+'" font-size="13" fill="#6a7280" text-anchor="middle">'+
+      (r0.getMonth()+1)+'/'+r0.getDate()+'</text>';
+  }
+  svg += '</svg>';
+  box.innerHTML = svg;
+}
+function renderPeriodAvg(list){
+  var pas = periodAverages(list);
+  var maxAvg = 0; pas.forEach(function(x){ if(x.avg>maxAvg) maxAvg=x.avg; });
+  var cap = Math.max(10, Math.ceil(maxAvg));
+  $('#pa-sub').textContent = '近'+curDays+'天';
+  $('#period-avg').innerHTML = pas.map(function(x){
+    if(x.avg===null) return '<div class="pa-row"><span class="pl">'+x.p.label+'</span>'+
+      '<div class="bar-wrap"></div><span class="pv">还没记过</span></div>';
+    var st = statusOf(x.avg, x.p.tgt);
+    var wPct = Math.min(100, x.avg/cap*100);
+    return '<div class="pa-row"><span class="pl">'+x.p.label+'</span>'+
+      '<div class="bar-wrap"><div class="bar" style="width:'+wPct.toFixed(0)+'%;background:'+ST_COLOR[st]+'"></div></div>'+
+      '<span class="pv"><b>'+x.avg.toFixed(1)+'</b> ('+x.count+'次)</span></div>';
+  }).join('');
+}
+function renderHistory(){
+  var byDay = {};
+  db.records.slice().sort(function(a,b){ return b.measuredAt-a.measuredAt; }).forEach(function(r){
+    var k = dayKey(new Date(r.measuredAt)); (byDay[k]=byDay[k]||[]).push(r);
+  });
+  var keys = Object.keys(byDay).sort().reverse();
+  $('#his-sub').textContent = '共 '+db.records.length+' 条';
+  var limit = hisExpanded ? keys.length : Math.min(7, keys.length);
+  var html = '';
+  for(var i=0;i<limit;i++){
+    var d = new Date(keys[i].replace(/-/g,'/'));
+    html += '<div class="his-group">'+fmtMD(d)+' 周'+WEEK[d.getDay()]+'</div>';
+    byDay[keys[i]].forEach(function(r){ html += recRowHTML(r); });
+  }
+  $('#history-list').innerHTML = html || '<div class="empty">还没有记录</div>';
+  $('#btn-his-more').style.display = keys.length>7 ? 'block' : 'none';
+  $('#btn-his-more').textContent = hisExpanded ? '收起 ▴' : '展开更多记录 ▾';
+}
+
+/* ==================== 两步录入 Sheet ==================== */
+var editingId = null;
+var sheetTime = null;
+var valStr = '';
+var curStep = 1;
+function recommendPeriod(){
+  var h = new Date().getHours()+new Date().getMinutes()/60;
+  for(var i=0;i<PERIODS.length;i++){ var p=PERIODS[i];
+    if(h>=p.win[0] && h<p.win[1]) return p.id; }
+  return 'random';
+}
+function valNum(){ return parseFloat(valStr); }
+function valValid(){ var v=valNum(); return !isNaN(v) && v>=1.0 && v<=33.3; }
+function openSheet(rec){
+  editingId = rec ? rec.id : null;
+  $('#sheet-title').textContent = rec ? '修改记录' : '记一笔血糖';
+  $('#btn-del').style.display = rec ? 'block' : 'none';
+  sheetTime = rec ? rec.measuredAt : Date.now();
+  valStr = rec ? rec.value.toFixed(1) : '';
+  $('#note-input').value = rec ? (rec.note||'') : '';
+  $('#more-box').classList.remove('open');
+  $('#btn-more').textContent = '更多选项 ▾　修改时间 / 写备注';
+  // 快捷值：最近 3 个不同值
+  var recents=[]; db.records.slice(-12).reverse().forEach(function(r){
+    if(recents.indexOf(r.value)<0 && recents.length<3) recents.push(r.value); });
+  $('#quick-chips').innerHTML = recents.map(function(v){
+    return '<span class="qchip" data-v="'+v+'">'+v.toFixed(1)+'</span>'; }).join('');
+  buildKeypad();
+  buildPeriods(rec ? rec.period : null);
+  updateTimeDisplay();
+  showStep(1);
+  $('#mask').classList.add('show'); $('#sheet').classList.add('open');
+}
+function closeSheet(){ $('#mask').classList.remove('show'); $('#sheet').classList.remove('open'); editingId=null; }
+function buildKeypad(){
+  var keys = ['1','2','3','4','5','6','7','8','9','del','0','dot'];
+  var labels = {del:'⌫ 删除', dot:'·'};
+  $('#keypad').innerHTML = keys.map(function(k){
+    return '<button class="key'+(k==='del'||k==='dot'?' fn':'')+'" data-k="'+k+'">'+labels[k]+'</button>'; }).join('');
+}
+function buildPeriods(preSel){
+  var recId = preSel || recommendPeriod();
+  var grid = $('#period-grid'); grid.innerHTML='';
+  PERIODS.forEach(function(p){
+    var b = el('<div class="pchip'+(p.id===recId?' sel':'')+'" data-pid="'+p.id+'">'+p.label+
+      (!preSel && p.id===recId ? '<span class="rec-flag">推荐</span>' : '')+'</div>');
+    grid.appendChild(b);
+  });
+}
+function showStep(n){
+  curStep = n;
+  $('#step1').style.display = n===1?'block':'none';
+  $('#step2').style.display = n===2?'block':'none';
+  $('#step-ind').textContent = n===1 ? '第 1 步，共 2 步：输入数值' : '第 2 步，共 2 步：选时段后保存';
+  if(n===1) updateValDisplay();
+  if(n===2) updateStep2();
+}
+function updateValDisplay(){
+  var disp = $('#val-display');
+  disp.textContent = valStr==='' ? '0.0' : valStr;
+  disp.classList.toggle('placeholder', valStr==='');
+  var box = $('#live-status-1');
+  var btn = $('#btn-next');
+  if(valStr===''){ box.innerHTML='<span class="muted">用下面的键盘输入血糖数值</span>'; btn.disabled=true; return; }
+  var v = valNum();
+  if(isNaN(v) || v<1.0 || v>33.3){
+    box.innerHTML='<span style="color:var(--red-ink);font-weight:700">数值要在 1.0 到 33.3 之间，请重新输入</span>';
+    btn.disabled=true; return;
+  }
+  box.innerHTML='<span class="dot-i" style="background:var(--green)"></span><span style="color:var(--green-ink)">输入好了，点「下一步」继续</span>';
+  btn.disabled=false;
+}
+function updateStep2(){
+  $('#sum-val').textContent = valNum().toFixed(1);
+  var pid = currentPeriodId();
+  var tag = $('#sum-status');
+  var save = $('#btn-save');
+  if(!pid){ tag.style.display='none'; save.disabled=true; return; }
+  var p = pById(pid); var st = statusOf(valNum(), p.tgt); var t=db.targets[p.tgt];
+  tag.style.display='inline-block';
+  tag.className='sum-status '+ST_CLS[st];
+  tag.textContent = ST_TXT[st]+'（'+p.label+' '+t[0].toFixed(1)+'–'+t[1].toFixed(1)+'）';
+  save.disabled=false;
+}
+function currentPeriodId(){ var c = document.querySelector('.pchip.sel'); return c ? c.dataset.pid : null; }
+function updateTimeDisplay(){
+  var d = new Date(sheetTime); var now = new Date();
+  var s = (dayKey(d)===dayKey(now)?'今天':fmtMD(d))+' '+fmtHM(d);
+  $('#time-display').textContent = s;
+  var inp = $('#time-input');
+  inp.max = new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  inp.value = new Date(sheetTime - new Date(sheetTime).getTimezoneOffset()*60000).toISOString().slice(0,16);
+}
+function saveRecord(){
+  var v = Math.round(valNum()*10)/10;
+  if(isNaN(v)||v<1.0||v>33.3){ toast('数值要在 1.0 到 33.3 之间'); return; }
+  var pid = currentPeriodId(); if(!pid){ toast('请选一个测量时段'); return; }
+  if(sheetTime > Date.now()+60000){ toast('测量时间不能是未来的时间'); return; }
+  if(editingId){
+    db.records = db.records.map(function(r){
+      if(r.id===editingId) return { id:r.id, value:v, period:pid, note:$('#note-input').value.trim(),
+        measuredAt:sheetTime, createdAt:r.createdAt, updatedAt:Date.now() };
+      return r; });
+    toast('改好了 ✓');
+  }else{
+    db.records.push({ id:'r'+Date.now()+Math.floor(Math.random()*1e4), value:v, period:pid,
+      note:$('#note-input').value.trim(), measuredAt:sheetTime, createdAt:Date.now() });
+    toast('记好了，继续保持 ✓');
+  }
+  db.records.sort(function(a,b){ return a.measuredAt-b.measuredAt; });
+  persist(); closeSheet();
+  renderToday(); if($('#page-trend').classList.contains('active')) renderTrend();
+}
+
+/* ==================== 我的页 ==================== */
+function fillTargetInputs(){
+  $('#tg-f-lo').value=db.targets.fasting[0].toFixed(1); $('#tg-f-hi').value=db.targets.fasting[1].toFixed(1);
+  $('#tg-n-lo').value=db.targets.nonFasting[0].toFixed(1); $('#tg-n-hi').value=db.targets.nonFasting[1].toFixed(1);
+}
+function saveTargets(){
+  var f=[parseFloat($('#tg-f-lo').value), parseFloat($('#tg-f-hi').value)];
+  var n=[parseFloat($('#tg-n-lo').value), parseFloat($('#tg-n-hi').value)];
+  var all=f.concat(n);
+  for(var i=0;i<4;i++) if(isNaN(all[i])||all[i]<1||all[i]>25){ toast('目标值要在 1.0 到 25.0 之间'); return; }
+  if(f[0]>=f[1]||n[0]>=n[1]){ toast('下限要比上限小'); return; }
+  db.targets={fasting:[Math.round(f[0]*10)/10,Math.round(f[1]*10)/10],nonFasting:[Math.round(n[0]*10)/10,Math.round(n[1]*10)/10]};
+  persist(); toast('目标范围改好了，颜色和统计已更新');
+  renderToday(); if($('#page-trend').classList.contains('active')) renderTrend();
+}
+function exportText(){
+  var s = statOf(db.records);
+  var days = db.records.map(function(r){ return dayKey(new Date(r.measuredAt)); });
+  var lines = ['【糖记】血糖记录导出','导出时间 '+fmtDT(new Date()),
+    '共 '+db.records.length+' 条 · '+days[0].replace(/-/g,'/')+' ~ '+days[days.length-1].replace(/-/g,'/'),'---'];
+  db.records.slice().reverse().forEach(function(r){
+    var p=pById(r.period), st=statusOf(r.value,p.tgt);
+    var d=new Date(r.measuredAt);
+    lines.push(dayKey(d).replace(/-/g,'/')+' '+fmtHM(d)+'\t'+p.label+'\t'+r.value.toFixed(1)+'\t'+ST_TXT[st]+(r.note?'\t'+r.note:''));
+  });
+  lines.push('---');
+  lines.push('平均 '+s.avg.toFixed(1)+' mmol/L ｜ 达标比例 '+Math.round(s.tir*100)+'% ｜ 最高 '+s.max.value.toFixed(1)+
+    '（'+fmtMD(new Date(s.max.measuredAt))+' '+pById(s.max.period).label+'）｜ 最低 '+s.min.value.toFixed(1)+
+    '（'+fmtMD(new Date(s.min.measuredAt))+' '+pById(s.min.period).label+'）');
+  lines.push('目标：空腹 '+db.targets.fasting[0].toFixed(1)+'–'+db.targets.fasting[1].toFixed(1)+' · 非空腹 '+db.targets.nonFasting[0].toFixed(1)+'–'+db.targets.nonFasting[1].toFixed(1)+' mmol/L');
+  lines.push('仅供参考，不能代替医生诊断');
+  return lines.join('\n');
+}
+function doExport(){
+  var text = exportText();
+  function fallback(){
+    var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand('copy'); toast('已复制 '+db.records.length+' 条记录'); }
+    catch(e){ toast('复制失败，请手动复制弹窗里的文字'); }
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ toast('已复制 '+db.records.length+' 条记录'); }, fallback);
+  } else fallback();
+}
+
+/* ==================== 事件绑定 ==================== */
+function bind(){
+  document.querySelectorAll('.tab').forEach(function(b){
+    b.addEventListener('click', function(){ switchTab(b.dataset.tab); }); });
+  $('#btn-plus').addEventListener('click', function(){ openSheet(null); });
+  $('#mask').addEventListener('click', closeSheet);
+  $('#sheet-close').addEventListener('click', closeSheet);
+  $('#btn-next').addEventListener('click', function(){ if(valValid()) showStep(2); });
+  $('#btn-back').addEventListener('click', function(){ showStep(1); });
+  $('#btn-save').addEventListener('click', saveRecord);
+  $('#btn-del').addEventListener('click', function(){
+    if(!editingId) return;
+    if(!confirm('确定删除这条记录吗？删除后找不回来。')) return;
+    db.records = db.records.filter(function(r){ return r.id!==editingId; });
+    persist(); closeSheet(); renderToday();
+    if($('#page-trend').classList.contains('active')) renderTrend();
+    toast('已删除');
+  });
+  $('#keypad').addEventListener('click', function(e){
+    var k = e.target.closest('.key'); if(!k) return;
+    var key = k.dataset.k;
+    if(key==='del'){ valStr = valStr.slice(0,-1); }
+    else if(key==='dot'){ if(valStr.indexOf('.')<0) valStr = (valStr===''?'0':valStr)+'.'; }
+    else {
+      var dot = valStr.indexOf('.');
+      if(dot>=0){ if(valStr.length-dot>1) return; }        // 小数最多 1 位
+      else { if(valStr.length>=2) return; }                 // 整数最多 2 位
+      valStr += key;
+    }
+    if(valStr.length>1 && valStr[0]==='0' && valStr[1]!=='.') valStr = String(parseInt(valStr,10));
+    if(valStr==='0.') {}
+    updateValDisplay();
+  });
+  $('#quick-chips').addEventListener('click', function(e){
+    var chip = e.target.closest('.qchip'); if(!chip) return;
+    valStr = chip.dataset.v; updateValDisplay(); });
+  $('#period-grid').addEventListener('click', function(e){
+    var chip = e.target.closest('.pchip'); if(!chip) return;
+    document.querySelectorAll('.pchip').forEach(function(c){ c.classList.remove('sel'); });
+    chip.classList.add('sel'); updateStep2(); });
+  $('#btn-more').addEventListener('click', function(){
+    var box = $('#more-box'); box.classList.toggle('open');
+    $('#btn-more').textContent = box.classList.contains('open')
+      ? '收起更多选项 ▴' : '更多选项 ▾　修改时间 / 写备注'; });
+  $('#time-input').addEventListener('change', function(){
+    var t = new Date(this.value).getTime();
+    if(isNaN(t)) return;
+    if(t > Date.now()+60000){ toast('测量时间不能是未来的时间'); updateTimeDisplay(); return; }
+    sheetTime = t; updateTimeDisplay(); });
+  document.addEventListener('click', function(e){
+    var row = e.target.closest('.rec-row'); if(!row) return;
+    var rec = db.records.filter(function(r){ return r.id===row.dataset.id; })[0];
+    if(rec) openSheet(rec); });
+  document.querySelectorAll('[data-goto]').forEach(function(x){
+    x.addEventListener('click', function(){ switchTab(x.dataset.goto); }); });
+  $('#range-seg').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    curDays = +b.dataset.days; renderTrend(); });
+  $('#btn-his-more').addEventListener('click', function(){ hisExpanded=!hisExpanded; renderHistory(); });
+  $('#trend-chart').addEventListener('click', function(e){
+    var c = e.target.closest('circle'); if(!c) return;
+    var rec = db.records.filter(function(r){ return r.id===c.dataset.rid; })[0]; if(!rec) return;
+    var p=pById(rec.period), st=statusOf(rec.value,p.tgt); var d=new Date(rec.measuredAt);
+    $('#chart-detail').innerHTML = fmtDT(d)+' · '+p.label+' · <b style="color:'+ST_COLOR[st]+'">'+
+      rec.value.toFixed(1)+' mmol/L '+ST_TXT[st]+'</b>'+(rec.note?' · '+esc(rec.note):''); });
+  $('#menu-target').addEventListener('click', function(){ $('#target-editor').classList.toggle('open'); });
+  $('#tg-save').addEventListener('click', saveTargets);
+  $('#tg-reset').addEventListener('click', function(){
+    db.targets = JSON.parse(JSON.stringify(DEFAULT_TARGETS)); fillTargetInputs(); persist();
+    toast('已恢复默认目标'); renderToday();
+    if($('#page-trend').classList.contains('active')) renderTrend(); });
+  $('#menu-export').addEventListener('click', doExport);
+  $('#menu-reseed').addEventListener('click', function(){
+    if(!confirm('重置后会清空你录入的数据，恢复成演示数据。确定吗？')) return;
+    localStorage.removeItem(STORE_KEY); load(); fillTargetInputs();
+    renderToday(); if($('#page-trend').classList.contains('active')) renderTrend();
+    toast('已重置为演示数据'); });
+  var rt; window.addEventListener('resize', function(){
+    clearTimeout(rt); rt=setTimeout(function(){
+      renderSparkline(); if($('#page-trend').classList.contains('active')) renderTrend();
+    },200); });
+}
+
+/* ==================== 启动 ==================== */
+function boot(){
+  try{
+    load(); fillTargetInputs(); bind(); renderToday();
+    var now = new Date();
+    $('#sb-time').textContent = now.getHours()+':'+now.getMinutes();
+  }catch(err){
+    var b=$('#err-banner'); b.style.display='block';
+    b.textContent='原型脚本出错：'+err.message+'（请截图反馈）';
+  }
+}
+boot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+/* ============ 糖记 · 全局样式（适老化设计令牌） ============
+   基准字号 36rpx(18px) / 次要 32rpx(16px) / 可点区域 ≥120rpx / 高对比配色 */
+page {
+  background: #f2f4f6;
+  font-size: 36rpx;
+  color: #191d23;
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.card {
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 32rpx;
+  margin: 0 28rpx 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(30, 40, 60, 0.06);
+}
+
+.card-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.muted {
+  color: #49505e;
+  font-size: 32rpx;
+}
+
+.link {
+  color: #0b7d5e;
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+/* 状态双编码：颜色 + 文字 */
+.dot {
+  display: inline-block;
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  margin-right: 14rpx;
+  vertical-align: -2rpx;
+}
+
+.dot-ok { background: #0e9c73; }
+.dot-low { background: #b45309; }
+.dot-high { background: #c53030; }
+
+.st-ok { color: #0a5c44; background: #dff4ea; }
+.st-low { color: #8a4106; background: #fdf0dc; }
+.st-high { color: #a02020; background: #fdeaea; }
+.st-tag {
+  display: inline-block;
+  font-size: 36rpx;
+  font-weight: 700;
+  border-radius: 24rpx;
+  padding: 12rpx 28rpx;
+}
+
+/* 大按钮 */
+.big-btn {
+  width: 100%;
+  border: none;
+  background: #0b7d5e;
+  color: #fff;
+  font-size: 42rpx;
+  font-weight: 700;
+  border-radius: 36rpx;
+  height: 176rpx;
+  line-height: 176rpx;
+  text-align: center;
+}
+.big-btn::after { border: none; }
+.big-btn[disabled] {
+  background: #c3cdc8;
+  color: #fff;
+}
+.big-btn-ghost {
+  background: #eceff3;
+  color: #333b48;
+}
+
+/* 空态 */
+.empty {
+  border: 4rpx dashed #c8cfd8;
+  border-radius: 32rpx;
+  padding: 52rpx 32rpx;
+  text-align: center;
+  color: #49505e;
+  font-size: 34rpx;
+  line-height: 1.8;
+}
+
+.sec-lab {
+  font-size: 32rpx;
+  color: #49505e;
+  font-weight: 700;
+  margin: 32rpx 0 20rpx;
+}

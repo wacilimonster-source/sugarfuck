@@ -1,0 +1,124 @@
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+}
+.avatar {
+  width: 124rpx;
+  height: 124rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #0e9c73, #0b7d5e);
+  color: #ffffff;
+  font-size: 52rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex: none;
+}
+.pname {
+  font-size: 38rpx;
+  font-weight: 700;
+}
+.psync {
+  margin-top: 8rpx;
+  color: #0b7d5e;
+  font-weight: 600;
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 30rpx 4rpx;
+  border-bottom: 2rpx solid #f0f2f5;
+  min-height: 160rpx;
+}
+.menu-row:last-child { border-bottom: none; }
+.menu-row.plain { border-bottom: none; }
+.mi {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42rpx;
+  flex: none;
+}
+.mi-green { background: #dff4ea; }
+.mi-blue { background: #e3edfa; }
+.mi-gray { background: #eceff3; }
+.mt {
+  flex: 1;
+  font-size: 36rpx;
+  font-weight: 600;
+}
+.arrow {
+  color: #8a93a3;
+  font-size: 44rpx;
+}
+
+/* 目标编辑器 */
+.target-editor {
+  padding: 28rpx 0 10rpx;
+}
+.tg-line {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 28rpx;
+  font-size: 34rpx;
+}
+.tg-line .lab {
+  width: 156rpx;
+  color: #49505e;
+}
+.tg-input {
+  width: 192rpx;
+  border: 4rpx solid #e3e7ec;
+  border-radius: 24rpx;
+  padding: 22rpx 12rpx;
+  text-align: center;
+  font-size: 42rpx;
+  box-sizing: border-box;
+}
+.tilde { color: #49505e; }
+.tg-line .unit {
+  color: #49505e;
+  font-size: 30rpx;
+}
+.tg-btns {
+  display: flex;
+  gap: 24rpx;
+}
+.tg-save {
+  flex: 1;
+  background: #0b7d5e;
+  color: #ffffff;
+  font-size: 34rpx;
+  font-weight: 700;
+  border-radius: 28rpx;
+  padding: 26rpx 0;
+  border: none;
+}
+.tg-save::after { border: none; }
+.tg-reset {
+  flex: 1;
+  background: #e3efe9;
+  color: #0b7d5e;
+  font-size: 34rpx;
+  font-weight: 700;
+  border-radius: 28rpx;
+  padding: 26rpx 0;
+  border: none;
+}
+.tg-reset::after { border: none; }
+
+.disclaim {
+  font-size: 28rpx;
+  color: #5a6270;
+  line-height: 1.8;
+  padding: 8rpx 16rpx 40rpx;
+  text-align: center;
+}

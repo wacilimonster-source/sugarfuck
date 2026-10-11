@@ -1,0 +1,28 @@
+{
+  "pages": [
+    "pages/today/today",
+    "pages/trend/trend",
+    "pages/mine/mine",
+    "pages/edit/edit"
+  ],
+  "window": {
+    "navigationBarTitleText": "糖记",
+    "navigationBarBackgroundColor": "#f2f4f6",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f2f4f6",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#6a7280",
+    "selectedColor": "#0b7d5e",
+    "backgroundColor": "#ffffff",
+    "list": [
+      { "pagePath": "pages/today/today", "text": "今天" },
+      { "pagePath": "pages/trend/trend", "text": "趋势" },
+      { "pagePath": "pages/mine/mine", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

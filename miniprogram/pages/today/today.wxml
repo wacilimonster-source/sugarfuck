@@ -1,0 +1,66 @@
+<view class="offline-bar" wx:if="{{offline}}">当前离线：数据已保存在本机，联网后自动同步</view>
+
+<view class="today-head">
+  <view class="date">{{dateText}}</view>
+  <view class="streak">{{streakText}}</view>
+</view>
+
+<view class="remind {{remind.cls}}" wx:if="{{remind}}">
+  <view class="ricon">{{remind.icon}}</view>
+  <view class="rbody">
+    <view class="rt">{{remind.title}}</view>
+    <view class="rd">{{remind.desc}}</view>
+  </view>
+</view>
+
+<view class="card" wx:if="{{hero}}" bindtap="tapRecord" data-id="{{hero.id}}">
+  <view class="hero-top">
+    <view class="htime">{{hero.timeText}}</view>
+    <view class="period-chip">{{hero.periodLabel}}</view>
+  </view>
+  <view class="hero-val {{hero.st === 'ok' ? '' : (hero.st === 'low' ? 'c-low' : 'c-high')}}">{{hero.value}}<text class="unit">mmol/L</text></view>
+  <view class="status-tag st-{{hero.st}}">{{hero.stText}} {{hero.targetText}}</view>
+  <view class="muted hero-note" wx:if="{{hero.note}}">备注：{{hero.note}}</view>
+</view>
+<view class="card" wx:else>
+  <view class="empty">
+    <view>还没有记录</view>
+    <view>点下面的 ＋ 记第一笔</view>
+  </view>
+</view>
+
+<view class="card">
+  <view class="card-title">
+    <text>今日记录</text>
+    <text class="muted" wx:if="{{todayCount}}">{{todayCount}}</text>
+  </view>
+  <block wx:if="{{hasToday}}">
+    <view class="rec-row" wx:for="{{todayList}}" wx:key="id" bindtap="tapRecord" data-id="{{item.id}}">
+      <view class="dot bg-{{item.cls}}"></view>
+      <view class="rt">
+        <view class="rp">
+          {{item.periodLabel}}
+          <text class="muted note-inline" wx:if="{{item.note}}">· {{item.note}}</text>
+        </view>
+        <view class="rtime">{{item.timeText}}</view>
+      </view>
+      <view class="rv" style="color:{{item.color}}">{{item.value}}</view>
+    </view>
+  </block>
+  <view class="empty" wx:else>
+    <view>今天还没有记录</view>
+    <view>测完血糖点下方 ＋，很快记完</view>
+  </view>
+</view>
+
+<view class="card">
+  <view class="card-title">
+    <text>近 7 天趋势</text>
+    <text class="more" bindtap="goTrend">看完整趋势 →</text>
+  </view>
+  <canvas id="spark-canvas" type="2d" class="spark" wx:if="{{hasSpark}}"></canvas>
+  <view class="muted cap" wx:if="{{hasSpark}}">绿底是目标范围 · 每天 1 个点（日平均）</view>
+  <view class="empty" wx:else>
+    <view>再记几天，这里会出现 7 天趋势线</view>
+  </view>
+</view>

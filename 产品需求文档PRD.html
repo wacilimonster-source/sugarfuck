@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>糖记 · 产品需求文档 PRD V2.0（安卓版）</title>
+<style>
+  :root{ --ink:#1f2329; --sub:#6b7382; --primary:#0f9d76; --line:#e5e9ef; --bg:#fbfcfd;
+    --green:#10b981; --amber:#c07a06; --red:#d33b3b; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.75;font-size:15px}
+  .wrap{max-width:860px;margin:0 auto;padding:48px 40px 80px}
+  header.doc{border-bottom:3px solid var(--primary);padding-bottom:20px;margin-bottom:28px}
+  header.doc h1{font-size:30px;margin-bottom:8px}
+  header.doc .meta{color:var(--sub);font-size:13px;display:flex;gap:18px;flex-wrap:wrap}
+  h2{font-size:21px;margin:44px 0 14px;padding-left:12px;border-left:4px solid var(--primary)}
+  h3{font-size:17px;margin:26px 0 10px;color:#173a30}
+  h4{font-size:15px;margin:18px 0 8px}
+  p{margin:8px 0}
+  ul,ol{padding-left:24px;margin:8px 0}
+  li{margin:4px 0}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px;background:#fff}
+  th,td{border:1px solid var(--line);padding:7px 11px;text-align:left;vertical-align:top}
+  th{background:#f0f5f3;font-weight:600;white-space:nowrap}
+  code{background:#eef2f0;border-radius:5px;padding:1px 6px;font-size:13px;font-family:Consolas,Menlo,monospace}
+  .tag{display:inline-block;border-radius:6px;padding:0 8px;font-size:12px;font-weight:600;line-height:22px;white-space:nowrap}
+  .p0{background:#fdecec;color:var(--red)} .p1{background:#fdf3e3;color:var(--amber)} .p2{background:#e9f0ee;color:#4a7a6a}
+  .new{background:#e3f0eb;color:#0b7d5e}
+  .ok{color:var(--green);font-weight:600}.low{color:var(--amber);font-weight:600}.high{color:var(--red);font-weight:600}
+  .callout{background:#eef7f3;border:1px solid #cfe8de;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14px}
+  .callout.warn{background:#fdf7ea;border-color:#f0dfb4}
+  .toc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 24px;margin-bottom:8px}
+  .toc a{color:#204a3e;text-decoration:none}
+  .toc a:hover{color:var(--primary)}
+  .toc ol{columns:2;column-gap:36px}
+  .flow{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px;font-size:14px;margin:12px 0}
+  .num{background:var(--primary);color:#fff;border-radius:50%;display:inline-block;width:22px;height:22px;
+    text-align:center;line-height:22px;font-size:12px;margin-right:8px}
+  @media print{ .toc{display:none} body{background:#fff} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="doc">
+  <h1>糖记 · 产品需求文档（PRD）</h1>
+  <div class="meta">
+    <span>版本 V2.0（安卓原生版）</span><span>日期 2026-10-08</span>
+    <span>状态：设计待驾驶员确认（R6 已批准平台换向：原生 Kotlin+Compose；提醒：系统通知+软提醒）</span>
+    <span>配套文档：《总设计案》V2.0、《项目实现步骤蓝图》V2.0</span>
+    <span>配套原型：产品设计原型.html V1.1（视觉基准，仍然适用）</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <b style="display:block;margin-bottom:6px">目录</b>
+  <ol>
+    <li><a href="#s1">产品概述</a></li>
+    <li><a href="#s2">信息架构与页面流转</a></li>
+    <li><a href="#s3">功能需求详述</a></li>
+    <li><a href="#s4">页面详细设计</a></li>
+    <li><a href="#s5">适老化设计规范</a></li>
+    <li><a href="#s6">数据模型</a></li>
+    <li><a href="#s7">非功能需求</a></li>
+    <li><a href="#s8">边界与异常场景</a></li>
+    <li><a href="#s9">验收标准</a></li>
+    <li><a href="#s10">版本规划</a></li>
+    <li><a href="#s11">风险与开放问题</a></li>
+  </ol>
+</nav>
+
+<!-- ================= 1 ================= -->
+<h2 id="s1">一、产品概述</h2>
+
+<h3>1.1 背景与定位</h3>
+<p>65 岁以上的血糖监测人群面临三重障碍：<b>记不住、看不清、不敢用</b>。此前方案为微信小程序，但个人自用场景下需要注册、审核、备案，且平台限制无法做定时提醒、无法直接分享文件——成本与收益不匹配。<b>糖记</b>改为<b>安卓原生 APP</b>，侧载安装，不注册、不上架、不备案：两步完成一条记录（大号数字键盘输数值 → 大按钮选时段 → 保存），每日定时通知提醒，数据存本机且可导出文件备份，打开即见大字趋势。</p>
+<p><b>糖记</b>是个人自用的记录与回顾工具，主要用户为 65 岁以上人群（驾驶员本人或其长辈），单机单用户。它不是医疗器械，不提供任何诊断或用药建议。</p>
+
+<h3>1.2 目标与非目标</h3>
+<table>
+  <tr><th>目标（V2.0）</th><th>非目标</th></tr>
+  <tr>
+    <td>
+      · 65+ 用户独立完成两步录入 ≤ 30 秒，无需他人协助<br>
+      · 全界面符合适老化规范（第五章：字号/触控/对比度）<br>
+      · 数据本机持久保存；导出文件可分享到微信/存档；换机可导入恢复<br>
+      · 每日定时系统通知提醒（≤2 条，可关）＋首页软提醒兜底<br>
+      · 趋势折线、时段均值、达标比例，大字呈现<br>
+      · 目标范围可自定义（遵医嘱个性化）<br>
+      · 给医生：复制文本 ＋ 生成 CSV 文件一键分享
+    </td>
+    <td>
+      · 不做 iOS 版、不上应用商店（侧载自用）<br>
+      · 不做账号体系、云同步、多设备同步<br>
+      · 不做诊断、用药建议，不计算剂量<br>
+      · 不做多人 / 家庭共用（家人远程查看需云，列入 Growth Tracks 缓行）<br>
+      · 不做血糖仪蓝牙 / CGM 自动同步（Parking Lot）<br>
+      · 不做社交、打卡分享、排行榜<br>
+      · 不做 mg/dL 单位（默认 mmol/L，Parking Lot）<br>
+      · 不做"标准版+大字模式"双版本（全量适老化单一版本）
+    </td>
+  </tr>
+</table>
+
+<h3>1.3 用户与使用场景</h3>
+<p><b>用户</b>：65 岁以上血糖监测者，使用安卓手机（Android 8.0+），会基础触屏操作，视力可能有老花，可能伴有手指灵活度下降；每日测量 1–4 次；希望长期坚持记录并在复诊时向医生展示数据。</p>
+<ul>
+  <li><b>场景 A · 顺手记录</b>：晨起测空腹 6.2，点开糖记 → 点 ＋ → 大键盘按 6.2 → 下一步（时段已自动选中"空腹"）→ 保存，全程两步，约 20 秒。</li>
+  <li><b>场景 B · 补记</b>：上午忘记录入，午饭后补记早餐后数值，在"更多选项"里把时间改到上午 9 点。</li>
+  <li><b>场景 C · 提醒</b>：早上 7:00 手机通知（"该测空腹血糖啦"）→ 点通知直接打开 APP 录入。</li>
+  <li><b>场景 D · 回顾</b>：晚上打开"趋势"页，看大字统计卡（平均血糖 / 达标比例 / 最高最低）和折线走势。</li>
+  <li><b>场景 E · 就诊</b>：复诊前点"导出数据"→ 生成文件 → 微信发给医生，或点"复制全部数据"直接粘贴。</li>
+  <li><b>场景 F · 换手机</b>：旧机导出文件发到新机 → 新机安装 APP → 导入文件 → 数据全部恢复。</li>
+</ul>
+
+<h3>1.4 核心循环</h3>
+<div class="flow">
+  <span class="num">1</span>定时通知提醒 → <span class="num">2</span>测血糖 → 点开 APP 点 ＋：大键盘输数值（第 1 步）→ 大按钮选时段（第 2 步，已自动推荐）→ 保存 →
+  <span class="num">3</span>本机保存 → <span class="num">4</span>首页即时反馈（达标绿 / 偏低橙 / 偏高红 + 文字）→
+  <span class="num">5</span>累积后看趋势、时段均值、达标比例 → 强化记录动机，回到 1
+</div>
+<p><b>状态源</b>：本机 Room 数据库为唯一权威数据源；无网络依赖；数据不出手机（除用户主动导出/分享）。</p>
+
+<!-- ================= 2 ================= -->
+<h2 id="s2">二、信息架构与页面流转</h2>
+<table>
+  <tr><th>层级</th><th>内容</th><th>说明</th></tr>
+  <tr><td>底部 Tab 1</td><td><b>今天</b></td><td>日期与连续天数、软提醒卡、最近一次记录大卡（72sp 数值）、今日记录列表、近 7 天迷你趋势</td></tr>
+  <tr><td>底部 Tab 2</td><td><b>趋势</b></td><td>7/30/90 天切换、趋势折线（目标区间带、点选明细）、3 张大字统计卡、各时段平均、按日分组历史（默认 7 天可展开）</td></tr>
+  <tr><td>中央 ＋</td><td><b>两步录入页</b></td><td>全屏页：第 1 步大号数字键盘输数值；第 2 步大按钮选时段 + 保存；更多选项（改时间/备注）折叠</td></tr>
+  <tr><td>底部 Tab 3</td><td><b>我的</b></td><td>目标范围设置、<b>提醒设置（新增）</b>、导出/导入数据、文字复制、版本与免责声明</td></tr>
+  <tr><td>子页</td><td><b>提醒设置页（新增）</b></td><td>≤2 条每日提醒（时间、开关、文案模板）、通知权限状态、电池优化白名单引导</td></tr>
+</table>
+<p>流转：任意 Tab 点 ＋ → 全屏录入页（原生返回手势）→ 保存后返回原页并刷新；点击任意记录行 → 进入同一录入页的编辑模式（仍为两步）；点通知 → 直接打开 APP 落在"今天"页。</p>
+
+<!-- ================= 3 ================= -->
+<h2 id="s3">三、功能需求详述</h2>
+
+<h3>FR-1 血糖记录管理 <span class="tag p0">P0</span></h3>
+<h4>两步录入流程</h4>
+<ul>
+  <li><b>第 1 步 · 输数值</b>：大号数字键盘（每键 ≥60dp 高、≥26sp 字），键位 1–9 / 0 / 小数点 / 删除；输入区 ≥60sp 显示；下方展示最近 3 个常用值大按钮（一键填入）。输入合法（1.0–33.3，最多 1 位小数）后"下一步：选时段"亮起。</li>
+  <li><b>第 2 步 · 选时段并保存</b>：顶部汇总条（大字数值 + 实时判定标签）；2 列 × 4 行大按钮（每个 ≥64dp 高、≥20sp 字）选时段，按当前时间自动推荐并预选（标"推荐"角标）；多数情况直接点"保存"完成。</li>
+  <li><b>更多选项（折叠）</b>：测量时间修改（补记用）与备注（≤200 字）默认收起，点"更多选项"展开；主流程不被干扰。</li>
+</ul>
+<h4>字段规则</h4>
+<table>
+  <tr><th>字段</th><th>类型 / 规则</th><th>说明</th></tr>
+  <tr><td>血糖值</td><td>数字，1.0–33.3 mmol/L，1 位小数</td><td>自定义键盘天然限制格式；超范围禁止进入第 2 步并明确提示</td></tr>
+  <tr><td>时段标签</td><td>8 选 1，必选</td><td>自动推荐（预选 + "推荐"角标），可改，见 FR-2</td></tr>
+  <tr><td>测量时间</td><td>日期时间，默认当前时间</td><td>折叠于更多选项；不允许未来时间（容差 1 分钟）</td></tr>
+  <tr><td>备注</td><td>文本，可选，≤ 200 字</td><td>18sp 输入框，折叠于更多选项</td></tr>
+</table>
+<h4>操作规则</h4>
+<ul>
+  <li><b>新增</b>：保存即写入本机数据库，成功后 Toast"记好了，继续保持 ✓"（3 秒），返回并刷新页面。</li>
+  <li><b>编辑</b>：点击记录行打开录入页（预填原值），两步走完保存；按新测量时间重新排序。</li>
+  <li><b>删除</b>：编辑态底部"删除这条记录"大按钮，系统确认对话框二次确认后删除，不可恢复。</li>
+  <li><b>重复时段</b>：同一天同一时段允许多条记录（复测场景）。</li>
+</ul>
+
+<h3>FR-2 时段标签体系 <span class="tag p0">P0</span></h3>
+<table>
+  <tr><th>时段</th><th>自动推荐时间窗</th><th>"今日应记"截止点</th><th>判定用目标</th></tr>
+  <tr><td>空腹</td><td>04:00–08:59</td><td>09:30</td><td>空腹目标（默认 4.4–7.0）</td></tr>
+  <tr><td>早餐后</td><td>09:00–10:59</td><td>11:00</td><td>非空腹目标</td></tr>
+  <tr><td>午餐前</td><td>11:00–12:59</td><td>13:00</td><td>非空腹目标</td></tr>
+  <tr><td>午餐后</td><td>13:00–15:59</td><td>16:00</td><td>非空腹目标</td></tr>
+  <tr><td>晚餐前</td><td>16:00–18:59</td><td>19:00</td><td>非空腹目标</td></tr>
+  <tr><td>晚餐后</td><td>19:00–21:59</td><td>22:00</td><td>非空腹目标</td></tr>
+  <tr><td>睡前</td><td>22:00–23:59</td><td>24:00</td><td>非空腹目标</td></tr>
+  <tr><td>随机</td><td>00:00–03:59（兜底推荐）</td><td>—（不参与提醒）</td><td>非空腹目标</td></tr>
+</table>
+<p>推荐规则：取录入时刻所在时间窗的时段为默认选中项并标注"推荐"；不在任何窗内（00:00–03:59）默认"随机"。</p>
+
+<h3>FR-3 目标范围与颜色反馈 <span class="tag p0">P0</span></h3>
+<ul>
+  <li>默认值：<b>空腹 4.4–7.0 mmol/L、非空腹 4.4–10.0 mmol/L</b>（参照《中国 2 型糖尿病防治指南》一般控制目标），可在"我的 → 目标范围设置"修改。</li>
+  <li>校验：每端 1.0–25.0，下限 &lt; 上限，保留 1 位小数；非法输入禁止保存并提示。</li>
+  <li>颜色规则（颜色+文字<b>双编码</b>）：<span class="ok">● 达标 绿色</span>；<span class="low">● 偏低 橙色</span>；<span class="high">● 偏高 红色</span>；状态色一律用加深版（见第五章）。应用于：第 2 步实时判定、记录列表圆点与数值、趋势图数据点、时段均值条。</li>
+  <li>修改目标后，全量历史记录与统计即时按新目标重新判定。</li>
+</ul>
+
+<h3>FR-4 统计分析 <span class="tag p0">P0</span></h3>
+<table>
+  <tr><th>指标</th><th>口径定义</th></tr>
+  <tr><td>平均血糖</td><td>所选范围内全部记录的算术平均，1 位小数</td></tr>
+  <tr><td>达标比例（即 TIR）</td><td>达标记录数 ÷ 总记录数 × 100%，按各自时段目标判定；取整。UI 用口语"达标比例"，副注"在目标范围内的次数占比"，不出现 TIR 缩写</td></tr>
+  <tr><td>最高 / 最低</td><td>极值记录，合并为一张卡展示，点数据点或看明细可见时段与日期</td></tr>
+  <tr><td>各时段平均</td><td>8 个时段分别的算术平均与次数；条形颜色按该时段目标判定；无数据显示"还没记过"</td></tr>
+  <tr><td>趋势折线</td><td>x 轴时间、y 轴 mmol/L；每条记录一个着色数据点（点击下方显示明细），折线为<b>日均值</b>连线；绿色背景带为非空腹目标区间，虚线为空腹上限；轴标签 ≥13sp</td></tr>
+  <tr><td>连续记录天数</td><td>按自然日向前连续有 ≥1 条记录的天数；今天尚无记录时从昨天起算（不因"今天还没测"清零）</td></tr>
+  <tr><td>范围切换</td><td>近 7 / 30 / 90 天（自然日，含今天）；分段按钮 ≥56dp 高</td></tr>
+</table>
+
+<h3>FR-5 软提醒 <span class="tag p0">P0</span></h3>
+<ul>
+  <li>"今天"页顶部提醒卡：列出当前时间已过截止点且今日无记录的时段，如"还有 2 个时段没记：空腹、早餐后"；全部记完显示绿色鼓励卡。</li>
+  <li>"随机"时段不参与提醒；持续记录天数徽章共同构成坚持激励。</li>
+  <li>软提醒永远开启（无需权限），是系统通知的兜底。</li>
+</ul>
+
+<h3>FR-6 定时系统通知提醒 <span class="tag p0">P0</span> <span class="tag new">V2.0 新增</span></h3>
+<table>
+  <tr><th>项</th><th>规则</th></tr>
+  <tr><td>条数</td><td>最多 2 条每日提醒（如 07:00"该测空腹血糖啦"、21:30"睡前别忘了血糖"）</td></tr>
+  <tr><td>每条组成</td><td>开关 + 时间（小时:分钟）+ 文案模板（从 3–4 个预设口语短句选择，可自定义短文本）</td></tr>
+  <tr><td>默认状态</td><td>首次安装默认<b>不开启</b>，在"我的 → 提醒设置"里一键开启并提供推荐组合</td></tr>
+  <tr><td>实现</td><td>AlarmManager 精确闹钟（setExactAndAllowWhileIdle）+ 通知渠道（重要性高、声音提醒）；重启设备后自动重排（BOOT_COMPLETED）</td></tr>
+  <tr><td>权限</td><td>Android 13+ 首次开启提醒时申请通知权限（POST_NOTIFICATIONS）；被拒时展示引导卡片，软提醒兜底</td></tr>
+  <tr><td>可靠性引导</td><td>提醒设置页内置"让提醒更可靠"引导：跳转系统「电池优化白名单 / 自启动」设置（针对国产 ROM 杀后台），文案按机型给通用指引</td></tr>
+  <tr><td>点击行为</td><td>点击通知打开 APP 落在"今天"页</td></tr>
+</table>
+
+<h3>FR-7 数据导出与导入 <span class="tag p0">P0</span> <span class="tag new">V2.0 新增</span></h3>
+<ul>
+  <li><b>复制文本</b>：生成制表符分隔文本（记录明细 + 汇总 + 当前目标），一键复制到剪贴板（沿用 V1 设计）。</li>
+  <li><b>导出文件</b>：生成 <code>糖记-2026-10-08.csv</code>（UTF-8 带 BOM，Excel/微信可直接打开），列：日期 / 时间 / 时段 / 血糖(mmol/L) / 判定 / 备注；末附汇总行。生成后调起<b>系统分享面板</b>（微信、邮件、文件管理器均可）。</li>
+  <li><b>导入恢复</b>：从文件选择器选 CSV → 校验表头与数值格式 → 逐条导入；<b>去重规则</b>：同 id 覆盖；无 id 时按（测量时间 + 数值 + 时段）完全一致判为重复跳过。导入前弹出预览"将导入 N 条（跳过重复 M 条）"确认。</li>
+  <li><b>换机迁移</b>：旧机导出 → 发送到新机 → 新机安装 APP → 导入。使用说明中给出三步图文。</li>
+</ul>
+
+<h3>FR-8 设置 <span class="tag p1">P1</span></h3>
+<ul>
+  <li>目标范围设置：4 个大号数值输入（空腹/非空腹 × 下限/上限）+ 保存 + 恢复默认。</li>
+  <li>提醒设置入口（见 FR-6）；通知权限与电池优化状态展示。</li>
+  <li>数据管理：导出文件 / 导入文件 / 复制文本。</li>
+  <li>版本信息；免责声明（≥14sp，口语化）常驻"我的"页底部。</li>
+</ul>
+
+<!-- ================= 4 ================= -->
+<h2 id="s4">四、页面详细设计</h2>
+<p>视觉基调整体遵循配套原型 <code>产品设计原型.html</code> V1.1（今天/趋势/我的/两步录入与其一一对应）；字号尺寸按 dp/sp 对应移植（见第五章）。新增页面按同一规范扩展。</p>
+
+<h3>4.1 今天页</h3>
+<ul>
+  <li><b>头部</b>：左侧日期（23sp 粗体），右侧橙色徽章"🔥 连续 N 天"（16sp）。</li>
+  <li><b>提醒卡</b>：缺时段时米黄警示卡（大图标 + 19sp 标题 + 16sp 说明）；记完转绿色鼓励卡。</li>
+  <li><b>最近一次大卡</b>：测量时间（16sp）、72sp 大数值、时段 chip、状态标签（18sp，达标/偏低/偏高 + 对应目标区间）、备注。点击进入编辑。</li>
+  <li><b>今日记录</b>：按时间倒序，每行 ≥76dp 高 = 状态圆点 + 时段（18sp，+备注）+ 时刻与判定（16sp）+ 数值（28sp）；点击进入编辑。空态："今天还没有记录，测完血糖点下方 ＋"。</li>
+  <li><b>近 7 天迷你趋势</b>：日均值折线 + 目标区间底色，入口"看完整趋势 →"跳转趋势 Tab。</li>
+</ul>
+
+<h3>4.2 趋势页</h3>
+<ul>
+  <li><b>范围切换</b>：近 7 / 30 / 90 天分段控件（≥56dp 高、17sp），默认 7 天。</li>
+  <li><b>趋势折线卡</b>：图高 ~250dp，轴标签 ≥13sp，数据点半径 5/3.5dp；点击数据点在图下方显示单条明细（16sp）。</li>
+  <li><b>3 张统计卡</b>：平均血糖 / 达标比例 / 最高最低，数值 27sp、标签 15sp；辅助行（16sp）"共 X 次记录 · 连续 Y 天 · 达标比例 = 在目标范围内的次数占比"。</li>
+  <li><b>各时段平均卡</b>：8 行水平条形（行高 ≥64dp、标签 17sp、数值 20sp），无数据时段显示"还没记过"。</li>
+  <li><b>历史记录</b>：按日分组倒序，默认最近 7 个有记录的日期，"展开更多记录"大按钮（≥56dp）切换，行样式与今日记录一致。</li>
+</ul>
+
+<h3>4.3 我的页</h3>
+<ul>
+  <li><b>账号卡</b>：本地图标 + "糖友"+ "● 数据存本机"状态说明（无联网）。</li>
+  <li><b>目标范围设置</b>：展开行内编辑器（输入框 21sp、按钮 ≥56dp）。</li>
+  <li><b>提醒设置</b>：进入子页（4.4）。</li>
+  <li><b>数据管理</b>：导出文件（分享）/ 导入文件 / 复制全部数据（给医生）。菜单行高 ≥80dp、文字 18sp。</li>
+  <li><b>关于</b>：版本号；免责声明常驻底部。</li>
+</ul>
+
+<h3>4.4 提醒设置页 <span class="tag new">V2.0 新增</span></h3>
+<ul>
+  <li><b>提醒 1 / 提醒 2</b> 两张卡：左侧大开关（≥60dp 触控），开启后显示大号时间（32sp，点击调起系统时间选择器）与文案模板选择（预设口语短句，如"该测空腹血糖啦 / 睡前别忘了血糖"）。</li>
+  <li><b>推荐组合</b>：一键套用"早 7:00 空腹 + 晚 21:30 睡前"。</li>
+  <li><b>可靠性卡片</b>：通知权限状态（未授予时红色提示 + "去开启"按钮）；"让提醒更可靠"按钮 → 跳转系统电池优化/自启动设置，附通用图文说明。</li>
+  <li>文案全口语化，不出现"AlarmManager/权限 POST_NOTIFICATIONS"等术语（面向用户只说"通知权限"）。</li>
+</ul>
+
+<h3>4.5 全局状态</h3>
+<table>
+  <tr><th>状态</th><th>表现</th></tr>
+  <tr><td>空态</td><td>各列表/图表均有虚线占位卡片与引导文案（17sp）</td></tr>
+  <tr><td>加载态</td><td>本机数据库毫秒级，图表首帧前显示占位；导入大量数据时显示进度</td></tr>
+  <tr><td>无网络</td><td>与功能无关（数据本机），无需任何离线提示</td></tr>
+  <tr><td>错误态</td><td>数据库/导入异常均有明确提示与恢复建议，不静默失败</td></tr>
+  <tr><td>操作反馈</td><td>Toast ≥17sp、持续 3 秒；关键按钮有按下态</td></tr>
+</table>
+
+<!-- ================= 5 ================= -->
+<h2 id="s5">五、适老化设计规范</h2>
+<p>本章为强制视觉与交互约束（延续 V1.1，单位改为 Android 的 dp/sp）；参考工信部适老化改造要求与 WCAG 2.1。</p>
+
+<h3>5.1 字号体系（sp）</h3>
+<table>
+  <tr><th>层级</th><th>规格</th><th>应用</th></tr>
+  <tr><td>核心数字</td><td>48–72sp 粗体</td><td>录入数值显示（64sp）、最近一次大卡（72sp）、汇总条（48sp）</td></tr>
+  <tr><td>列表数值</td><td>28sp 粗体</td><td>记录行血糖值</td></tr>
+  <tr><td>页面标题</td><td>19–23sp 粗体</td><td>卡片标题、日期、页面标题</td></tr>
+  <tr><td>正文 / 主操作</td><td>18–21sp</td><td>记录行时段、菜单项（18sp）、按钮文字（17–21sp）、输入框（18–21sp）</td></tr>
+  <tr><td>次要文字</td><td>16sp（下限）</td><td>时间、说明、辅助行</td></tr>
+  <tr><td>图表轴标签</td><td>13sp（仅图内）</td><td>坐标轴；图表结论必须另有 16sp 文字表述</td></tr>
+  <tr><td>免责声明</td><td>14sp（下限）</td><td>法律文案</td></tr>
+</table>
+<p>sp 随系统字体缩放：必须保证系统字体放大到 1.3x 时不破版（布局用自适应，不写死行高）。</p>
+
+<h3>5.2 触控目标（dp）</h3>
+<table>
+  <tr><th>元素</th><th>最小尺寸</th></tr>
+  <tr><td>数字键盘键、保存/下一步主按钮</td><td>高 ≥60dp（主按钮 ≥80dp）</td></tr>
+  <tr><td>时段选择按钮、菜单行、记录行</td><td>高 ≥64dp / 80dp / 76dp，整行可点</td></tr>
+  <tr><td>分段控件、折叠按钮、次级按钮</td><td>高 ≥56dp</td></tr>
+  <tr><td>相邻可点元素间距</td><td>≥12dp</td></tr>
+  <tr><td>中央 ＋ 按钮</td><td>≥64dp 圆形，凸出于底部栏</td></tr>
+</table>
+
+<h3>5.3 对比度与色彩</h3>
+<ul>
+  <li>正文与主要文字对白底 ≥ 7:1；次要文字 ≥ 5:1；禁止浅灰大段正文。</li>
+  <li>状态色加深版：达标绿 #0e9c73（文字 #0a5c44）、偏低橙 #b45309（文字 #8a4106）、偏高红 #c53030（文字 #a02020）；永远"颜色 + 文字"双编码。</li>
+  <li>色弱用户只看文字标签也能完整使用。</li>
+</ul>
+
+<h3>5.4 语言与文案</h3>
+<ul>
+  <li>不用英文缩写与专业黑话："达标比例（在目标范围内的次数占比）"代替"达标率 TIR"；提醒文案全部口语短句。</li>
+  <li>提示语具体、面向动作："数值要在 1.0 到 33.3 之间，请重新输入"。</li>
+  <li>医疗免责用口语："本工具只做记录和参考，不能代替医生诊断。"</li>
+</ul>
+
+<h3>5.5 交互与认知</h3>
+<ul>
+  <li>一步一件事：录入拆成两步，每步只有一个主要任务与一个主按钮。</li>
+  <li>默认值优先：时段自动推荐并预选；提醒提供推荐组合一键套用。</li>
+  <li>低频功能折叠：改时间、备注收进"更多选项"；提醒设置在子页。</li>
+  <li>无手势依赖：全部功能点按可达，不使用滑动删除、长按、双击等隐藏手势。</li>
+  <li>防误触与可恢复：删除必须二次确认；Toast 3 秒；主按钮置灰表达"不可点"。</li>
+  <li>步骤可见：多步流程顶部常驻"第 X 步，共 2 步"。</li>
+</ul>
+
+<!-- ================= 6 ================= -->
+<h2 id="s6">六、数据模型</h2>
+<h3>Room 数据库（本机，唯一数据源）</h3>
+<table>
+  <tr><th>表 / 存储</th><th>字段</th><th>约束</th></tr>
+  <tr><td rowspan="7"><code>records</code> 表</td><td>id</td><td>TEXT 主键（APP 内生成，导入导出沿用）</td></tr>
+  <tr><td>value</td><td>REAL，1.0–33.3，1 位小数</td></tr>
+  <tr><td>period</td><td>TEXT，8 枚举值（FR-2）</td></tr>
+  <tr><td>note</td><td>TEXT，≤200 字，可空</td></tr>
+  <tr><td>measuredAt</td><td>INTEGER（epoch 毫秒），≤ 当前时间；索引（倒序查询）</td></tr>
+  <tr><td>createdAt / updatedAt</td><td>INTEGER</td></tr>
+  <tr><td></td><td>排序键：measuredAt 升序</td></tr>
+  <tr><td><code>settings</code>（DataStore）</td><td>targets.fasting / targets.nonFasting</td><td>[4.4,7.0] / [4.4,10.0] 默认</td></tr>
+  <tr><td><code>settings</code>（DataStore）</td><td>reminders[≤2]</td><td>enabled / hour / minute / text</td></tr>
+</table>
+<p>统计（均值/达标比例/时段均值/日均值）在本地内存对查询结果现算；个人数据量（万条级以内）无性能问题。CSV 导入按 FR-7 去重规则执行。</p>
+
+<!-- ================= 7 ================= -->
+<h2 id="s7">七、非功能需求</h2>
+<table>
+  <tr><th>维度</th><th>要求</th></tr>
+  <tr><td>性能</td><td>冷启动 &lt; 2s；页面切换 &lt; 300ms；90 天（约 300 条）趋势渲染 &lt; 1s</td></tr>
+  <tr><td>包体</td><td>release APK &lt; 15MB（无第三方 UI 库/图表库）</td></tr>
+  <tr><td>适老化</td><td>全量满足第五章；系统字体 1.3x 不破版；上线前按 5.1–5.5 逐项走查</td></tr>
+  <tr><td>数据与隐私</td><td>数据仅存本机；除用户主动导出/分享外无任何数据外发；无网络权限诉求（提醒不需要网络）</td></tr>
+  <tr><td>兼容</td><td>minSdk 26（Android 8.0）至 targetSdk 35；覆盖主流国产 ROM；深色模式 V2.0 不做</td></tr>
+  <tr><td>可靠性</td><td>写入即持久（Room 事务）；提醒在杀后台/重启后自动恢复；被 ROM 限制时软提醒兜底</td></tr>
+  <tr><td>可用性</td><td>核心操作（录入）两步；其余操作 ≤ 3 次点击可达；所有功能无网络可用</td></tr>
+</table>
+
+<!-- ================= 8 ================= -->
+<h2 id="s8">八、边界与异常场景</h2>
+<table>
+  <tr><th>场景</th><th>处理</th></tr>
+  <tr><td>数值超 1.0–33.3</td><td>第 1 步红字提示，"下一步"置灰</td></tr>
+  <tr><td>小数点重复输入</td><td>自定义键盘天然忽略第二次小数点</td></tr>
+  <tr><td>选择未来时间</td><td>选择器上限当前时间；兜底校验拒绝保存并提示</td></tr>
+  <tr><td>通知权限被拒</td><td>提醒设置页红色状态 + "去开启"引导；软提醒兜底，功能不缺失</td></tr>
+  <tr><td>国产 ROM 杀后台导致提醒延迟</td><td>"让提醒更可靠"引导（电池优化白名单/自启动）；软提醒兜底；不引入第三方保活</td></tr>
+  <tr><td>设备重启</td><td>BOOT_COMPLETED 重新登记全部提醒</td></tr>
+  <tr><td>同一时段多条记录</td><td>允许（复测）；列表与统计均计入</td></tr>
+  <tr><td>00:00–03:59 录入</td><td>推荐"随机"时段；凌晨记录归属其自然日</td></tr>
+  <tr><td>修改目标范围</td><td>全量数据即时按新目标重新判定与统计</td></tr>
+  <tr><td>导入文件损坏/格式不对</td><td>先校验表头与逐行格式，给出"第 N 行格式不正确"定位提示，整体不导入（事务）</td></tr>
+  <tr><td>导入重复数据</td><td>按 FR-7 去重规则，预览确认后执行</td></tr>
+  <tr><td>换新手机</td><td>导出 → 分享到新机 → 安装 APP → 导入（使用说明图文）</td></tr>
+  <tr><td>安装被系统拦截</td><td>使用说明给出"允许安装未知应用"放行步骤</td></tr>
+  <tr><td>卸载 APP</td><td>本机数据随卸载删除——使用说明醒目提示"卸载前先导出"</td></tr>
+</table>
+
+<!-- ================= 9 ================= -->
+<h2 id="s9">九、验收标准（First Playable）</h2>
+<ol>
+  <li>模拟器直接运行；release APK 在驾驶员真机安装成功。</li>
+  <li>核心循环（两步）：点 ＋ → 键盘输入 7.8 → 下一步 → 时段已推荐"早餐后"（或按时间推荐项）→ 保存 → 首页即时显示且颜色正确；杀进程重启数据仍在。</li>
+  <li>录入第二条后趋势图出现两个数据点；7/30/90 天切换正常。</li>
+  <li>种子数据下：达标比例 / 时段均值 / 平均 / 最高最低与手工核算一致（对拍表）。</li>
+  <li>编辑与删除：改数值后列表与统计刷新；删除有二次确认。</li>
+  <li>目标范围：改为自定义值后，全部颜色与统计即时变化；非法输入被拦截。</li>
+  <li>提醒：模拟器到点弹出通知（截图为证）；拒绝通知权限时软提醒正常并出现引导。</li>
+  <li>导出/导入：CSV 能在微信/Excel 打开；导出→清空→导入后数据与判定完全一致、无重复。</li>
+  <li>驾驶员（或其长辈）亲手完成一轮"录入 → 查看 → 修改 → 导出"试用，全程无需讲解。</li>
+  <li>适老化走查：无小于 14sp 文字；正文对比度 ≥ 7:1；可点元素达 5.2 尺寸；两步流程无手势依赖；颜色+文字双编码；系统字体 1.3x 不破版。</li>
+</ol>
+
+<!-- ================= 10 ================= -->
+<h2 id="s10">十、版本规划</h2>
+<table>
+  <tr><th>版本</th><th>范围</th><th>状态</th></tr>
+  <tr><td>V1.x（微信小程序）</td><td>小程序版首版设计+实现</td><td>已存档（`miniprogram/` 仅参考，R6 终止）</td></tr>
+  <tr><td>V2.0（安卓，当前）</td><td>FR-1～FR-8：两步录入、本地库、颜色反馈、统计、软提醒、定时通知、导出导入、设置；原生 Kotlin+Compose</td><td>设计待确认，确认后进入蓝图 A1–A5</td></tr>
+  <tr><td>V2.x Growth Tracks</td><td>家人远程查看（需轻量云）、趋势长图分享给医生、HbA1c 记录、用药/饮食/运动日志、网盘手动同步</td><td>首版验收后排期</td></tr>
+  <tr><td>Parking Lot</td><td>iOS 版、应用商店上架、多设备同步、蓝牙血糖仪/CGM、mg/dL、深色模式</td><td>暂不做，可重开讨论</td></tr>
+</table>
+
+<!-- ================= 11 ================= -->
+<h2 id="s11">十一、风险与开放问题</h2>
+<table>
+  <tr><th>#</th><th>风险 / 问题</th><th>应对</th></tr>
+  <tr><td>Q1</td><td>国产 ROM 电池优化导致定时通知延迟或不弹</td><td>提醒设置页内置白名单/自启动引导；软提醒永远兜底；真机阶段验证并补充机型指引</td></tr>
+  <tr><td>Q2</td><td>用户卸载 APP 导致数据丢失</td><td>使用说明醒目提示；导出/导入为官方迁移路径；不依赖系统备份</td></tr>
+  <tr><td>Q3</td><td>目标手机系统版本低于 8.0</td><td>安装前确认（PEND-phone）；minSdk 26 已覆盖 2017 年后绝大多数机型</td></tr>
+  <tr><td>Q4</td><td>签名密钥丢失导致无法覆盖升级安装</td><td>密钥文件随项目 private 目录保留并提示备份；丢失则卸载重装+导入恢复（数据不依赖签名）</td></tr>
+  <tr><td>Q5</td><td>65+ 真机验证样本有限</td><td>驾驶员试用时请目标长辈亲手完成一轮；不适应点记录后进 V2.x 迭代</td></tr>
+</table>
+
+<h2>附录 A · 免责声明文案</h2>
+<p class="callout">本工具只做记录和参考，不能代替医生诊断。血糖管理请听医生的话，数值异常请及时就医。</p>
+
+<h2>附录 B · 术语表</h2>
+<table>
+  <tr><th>术语</th><th>释义</th></tr>
+  <tr><td>mmol/L</td><td>血糖浓度单位（毫摩尔每升），中国通用</td></tr>
+  <tr><td>达标比例（TIR）</td><td>血糖在目标范围内的次数占比；界面用"达标比例"，文档保留 TIR 便于检索</td></tr>
+  <tr><td>空腹 / 非空腹目标</td><td>两套目标区间；仅"空腹"时段使用空腹目标，其余时段使用非空腹目标</td></tr>
+  <tr><td>适老化</td><td>面向老年用户的字号、触控、对比度、语言与流程简化设计（见第五章）</td></tr>
+  <tr><td>dp / sp</td><td>Android 的密度无关尺寸单位 / 可缩放字号单位（sp 跟随系统字体设置）</td></tr>
+</table>
+
+</div>
+</body>
+</html>

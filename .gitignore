@@ -1,0 +1,24 @@
+# ===== Android 构建产物 =====
+android/.gradle/
+android/build/
+android/app/build/
+android/.idea/
+android/.kotlin/
+android/local.properties
+*.iml
+captures/
+
+# ===== 签名密钥（绝不入库！）=====
+android/keystore/
+*.jks
+*.keystore
+private*.key
+
+# ===== 依赖与临时文件 =====
+tools/node_modules/
+artifacts/
+.protoserver.js
+*.log
+
+# ===== 本机交付包（仓库内统一用 releases/ 目录托管）=====
+/糖记-*.apk

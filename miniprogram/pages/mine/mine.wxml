@@ -1,0 +1,52 @@
+<view class="card profile">
+  <view class="avatar">糖</view>
+  <view class="pinfo">
+    <view class="pname">糖友</view>
+    <view class="muted psync">{{cloudText}}</view>
+  </view>
+</view>
+
+<view class="card">
+  <view class="menu-row" bindtap="toggleEditor">
+    <view class="mi mi-green">🎯</view>
+    <view class="mt">目标范围设置</view>
+    <view class="arrow">›</view>
+  </view>
+  <view class="target-editor" wx:if="{{editorOpen}}">
+    <view class="tg-line">
+      <text class="lab">空腹</text>
+      <input class="tg-input" type="digit" value="{{fLo}}" data-k="fLo" bindinput="onInput" />
+      <text class="tilde">~</text>
+      <input class="tg-input" type="digit" value="{{fHi}}" data-k="fHi" bindinput="onInput" />
+      <text class="unit">mmol/L</text>
+    </view>
+    <view class="tg-line">
+      <text class="lab">非空腹</text>
+      <input class="tg-input" type="digit" value="{{nLo}}" data-k="nLo" bindinput="onInput" />
+      <text class="tilde">~</text>
+      <input class="tg-input" type="digit" value="{{nHi}}" data-k="nHi" bindinput="onInput" />
+      <text class="unit">mmol/L</text>
+    </view>
+    <view class="tg-btns">
+      <button class="tg-save" bindtap="saveTargets">保存</button>
+      <button class="tg-reset" bindtap="resetTargets">恢复默认</button>
+    </view>
+  </view>
+
+  <view class="menu-row" bindtap="exportData">
+    <view class="mi mi-blue">📋</view>
+    <view class="mt">复制全部数据（看病时给医生）</view>
+    <view class="arrow">›</view>
+  </view>
+</view>
+
+<view class="card">
+  <view class="menu-row plain">
+    <view class="mi mi-gray">ℹ️</view>
+    <view class="mt">版本</view>
+    <view class="muted">{{version}} 适老化版</view>
+  </view>
+</view>
+
+<view class="disclaim">本工具只做记录和参考，不能代替医生诊断。
+血糖管理请听医生的话，数值异常请及时就医。</view>

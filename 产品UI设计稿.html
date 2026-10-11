@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>糖记 · UI 精修设计稿 V2.2</title>
+<style>
+/* ================= 设计令牌 ================= */
+:root{
+  --ink:#171B21; --sub:#4E5665; --bg:#F3F5F7; --card:#fff;
+  --primary:#0B7D5E; --primary2:#12A077; --deep:#085C45;
+  --ok:#0E9C73; --ok-ink:#0A5C44; --ok-bg:#E1F5EC;
+  --low:#B45309; --low-ink:#8A4106; --low-bg:#FEF3E2;
+  --high:#C53030; --high-ink:#A02020; --high-bg:#FDECEC;
+  --amber-bg:#FFF4E2; --amber-ink:#8A4106; --amber:#E08A00;
+  --blue-bg:#E8F0FD; --blue-ink:#1D4ED8;
+  --line:#EAEEF2; --line2:#F2F5F8;
+  --shadow:0 2px 12px rgba(23,43,77,.06),0 1px 3px rgba(23,43,77,.04);
+  --shadow-sm:0 1px 5px rgba(23,43,77,.07);
+  --shadow-primary:0 8px 22px rgba(11,125,94,.28);
+  --r-card:20px; --r-inner:16px; --r-chip:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:linear-gradient(180deg,#F7F9FB 0%,#EEF2F5 100%);color:var(--ink);
+  padding:40px 32px 80px;
+}
+svg{display:block}
+
+/* ================= 页头 ================= */
+.page-head{max-width:1360px;margin:0 auto 28px}
+.page-head h1{font-size:30px;font-weight:800}
+.page-head h1 .ver{font-size:15px;font-weight:600;color:#fff;background:var(--primary);
+  border-radius:20px;padding:4px 12px;vertical-align:6px;margin-left:10px}
+.page-head p{color:var(--sub);font-size:15px;margin-top:10px;line-height:1.8;max-width:900px}
+
+/* 现状对比框 */
+.compare{max-width:1360px;margin:0 auto 36px;display:flex;gap:20px;align-items:stretch}
+.compare .shot{background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:16px;display:flex;gap:16px}
+.compare img{height:420px;border-radius:12px;border:1px solid var(--line)}
+.compare .notes{background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:20px 24px;flex:1}
+.compare .notes h3{font-size:17px;font-weight:800;margin-bottom:10px}
+.compare .notes li{font-size:14.5px;color:var(--sub);line-height:2;list-style:none;display:flex;gap:8px}
+.compare .notes li b{color:var(--high-ink)}
+.badxx{display:inline-flex;width:18px;height:18px;border-radius:6px;background:var(--high-bg);
+  color:var(--high-ink);font-size:11px;font-weight:800;align-items:center;justify-content:center;flex:none;margin-top:6px}
+
+/* ================= 设计规范板 ================= */
+.board{max-width:1360px;margin:0 auto 40px;background:#fff;border-radius:24px;box-shadow:var(--shadow);padding:28px 32px}
+.board h2{font-size:20px;font-weight:800;margin-bottom:22px}
+.board h2 small{font-weight:500;color:var(--sub);font-size:13px;margin-left:10px}
+.tokrow{display:flex;flex-wrap:wrap;gap:36px}
+.tok{flex:none}
+.tok .cap{font-size:12px;font-weight:700;color:var(--sub);letter-spacing:.5px;margin-bottom:12px;text-transform:uppercase}
+.swatches{display:flex;gap:10px}
+.sw{width:74px}
+.sw .c{height:44px;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.sw .n{font-size:11px;color:var(--sub);margin-top:6px;line-height:1.5}
+.typescale{display:flex;flex-direction:column;gap:8px}
+.ts{display:flex;align-items:baseline;gap:14px}
+.ts .demo{font-variant-numeric:tabular-nums}
+.ts .tagx{font-size:11px;color:var(--sub);min-width:120px}
+.iconrow{display:flex;flex-wrap:wrap;gap:14px;max-width:560px}
+.iconcell{width:52px;height:52px;border-radius:14px;background:#F6F8FA;display:flex;
+  align-items:center;justify-content:center;color:var(--ink)}
+.comprow{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+
+/* ================= 手机框 ================= */
+.frames{max-width:1360px;margin:0 auto;display:flex;flex-wrap:wrap;gap:44px 40px;justify-content:center}
+.frame{width:390px}
+.phone{width:390px;background:#0c1116;border-radius:46px;padding:10px;box-shadow:0 24px 60px rgba(20,30,45,.28),0 4px 14px rgba(20,30,45,.18)}
+.screen{position:relative;width:100%;height:844px;background:var(--bg);border-radius:37px;overflow:hidden;display:flex;flex-direction:column}
+.cap{margin-top:16px}
+.cap b{font-size:15.5px;font-weight:800;display:block;margin-bottom:8px}
+.cap ul{list-style:none}
+.cap li{font-size:13px;color:var(--sub);line-height:1.9;padding-left:16px;position:relative}
+.cap li::before{content:"";position:absolute;left:0;top:12px;width:7px;height:7px;border-radius:50%;background:var(--primary)}
+
+/* 状态栏 */
+.sbar{height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;font-size:13px;font-weight:700;color:var(--ink)}
+.sbar .ri{display:flex;gap:5px;align-items:center}
+.sbar .bat{width:22px;height:11px;border:1.6px solid var(--ink);border-radius:3px;position:relative}
+.sbar .bat::after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:12px;background:var(--ink);border-radius:1.5px}
+
+/* 内容区 */
+.content{flex:1;overflow:hidden;padding:6px 16px 0;position:relative}
+.content.pad-b{padding-bottom:110px}
+
+/* 头部 */
+.thead{display:flex;align-items:center;justify-content:space-between;padding:10px 2px 16px}
+.thead .date{font-size:24px;font-weight:800;letter-spacing:-.3px}
+.thead .date small{font-size:15px;font-weight:600;color:var(--sub);margin-left:6px}
+.streak{display:flex;align-items:center;gap:8px;background:#fff;border-radius:999px;
+  padding:7px 16px 7px 8px;box-shadow:var(--shadow-sm)}
+.streak .fl{width:28px;height:28px;border-radius:50%;background:var(--amber-bg);display:flex;align-items:center;justify-content:center;color:var(--amber)}
+.streak .tx{font-size:15px;font-weight:800;color:var(--amber-ink)}
+
+/* 卡片 */
+.card{background:var(--card);border-radius:var(--r-card);padding:16px;margin-bottom:14px;
+  box-shadow:var(--shadow);position:relative;overflow:hidden}
+.card .ct{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.card .ct .t{font-size:19px;font-weight:800}
+.card .ct .m{font-size:15px;color:var(--sub)}
+
+/* 提醒卡 */
+.remind{display:flex;gap:14px;align-items:center;border-radius:var(--r-card);padding:16px;margin-bottom:14px;position:relative;overflow:hidden}
+.remind.warn{background:var(--amber-bg);box-shadow:inset 0 0 0 1.5px #F5E3C2}
+.remind.done{background:var(--ok-bg);box-shadow:inset 0 0 0 1.5px #C4E8D8}
+.remind .tile{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;background:#fff;box-shadow:var(--shadow-sm)}
+.remind.warn .tile{color:var(--amber)}
+.remind.done .tile{color:var(--ok)}
+.remind .rt{font-size:19px;font-weight:800}
+.remind.warn .rt{color:#6D4D0F}
+.remind.done .rt{color:var(--ok-ink)}
+.remind .rd{font-size:16px;margin-top:3px;line-height:1.55}
+.remind.warn .rd{color:#8A6D33}
+.remind.done .rd{color:#3C7A63}
+
+/* 大卡（最近一次） */
+.hero .wm{position:absolute;right:-16px;top:-10px;color:var(--primary);opacity:.055}
+.hero .hrow1{display:flex;align-items:center;justify-content:space-between}
+.hero .htime{font-size:16px;color:var(--sub)}
+.pchip{font-size:15px;font-weight:800;color:var(--deep);background:var(--ok-bg);border-radius:999px;padding:6px 16px}
+.hero .hnum{display:flex;align-items:baseline;gap:8px;margin-top:4px}
+.hero .hv{font-size:72px;font-weight:800;letter-spacing:-2px;font-variant-numeric:tabular-nums;line-height:1.12}
+.hero .hu{font-size:18px;color:var(--sub);font-weight:600}
+.hero .hstat{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.stag{display:inline-flex;align-items:center;gap:6px;font-size:17px;font-weight:800;border-radius:999px;padding:7px 16px}
+.st-ok{color:var(--ok-ink);background:var(--ok-bg)}
+.st-low{color:var(--low-ink);background:var(--low-bg)}
+.st-high{color:var(--high-ink);background:var(--high-bg)}
+.hero .hgoal{font-size:15.5px;color:var(--sub)}
+.hero .hnote{font-size:16px;color:var(--sub);margin-top:10px}
+
+/* 记录行 */
+.rrow{display:flex;align-items:center;gap:14px;padding:15px 2px;min-height:76px;border-bottom:1.5px solid var(--line2)}
+.rrow:last-child{border-bottom:none}
+.rdot{width:11px;height:11px;border-radius:50%;flex:none}
+.rdot.ok{background:var(--ok);box-shadow:0 0 0 4px rgba(14,156,115,.14)}
+.rdot.low{background:var(--low);box-shadow:0 0 0 4px rgba(180,83,9,.13)}
+.rdot.high{background:var(--high);box-shadow:0 0 0 4px rgba(197,48,48,.13)}
+.rrow .mid{flex:1;min-width:0}
+.rrow .p{font-size:18px;font-weight:800}
+.rrow .p small{font-size:15px;font-weight:400;color:var(--sub);margin-left:5px}
+.rrow .tm{font-size:15.5px;color:var(--sub);margin-top:2px}
+.rrow .num{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.num.ok{color:var(--ink)} .num.low{color:var(--low)} .num.high{color:var(--high)}
+
+/* 空态（虚线） */
+.dash{border:1.6px dashed #D2DAE3;border-radius:var(--r-inner);padding:26px 16px;text-align:center}
+.dash .ico{width:56px;height:56px;border-radius:50%;background:var(--ok-bg);color:var(--primary);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.dash .d1{font-size:17.5px;font-weight:700;color:#333B48}
+.dash .d2{font-size:15.5px;color:var(--sub);margin-top:4px;line-height:1.6}
+
+/* 底部栏 */
+.tabbar{margin-top:auto;height:88px;background:#fff;box-shadow:0 -6px 24px rgba(23,43,77,.07);
+  display:flex;align-items:stretch;position:relative;z-index:5}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#828B99;padding-top:6px}
+.tab svg{width:26px;height:26px}
+.tab span{font-size:14.5px;font-weight:600}
+.tab.on{color:var(--primary)}
+.tab.on span{font-weight:800}
+.tabmid{width:96px;position:relative}
+.tabmid .plus{position:absolute;left:50%;top:-30px;transform:translateX(-50%);width:64px;height:64px;
+  border-radius:50%;background:linear-gradient(150deg,var(--primary2),var(--primary));color:#fff;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-primary)}
+.tabmid .plus svg{width:30px;height:30px}
+.tabmid .plabel{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:14.5px;font-weight:800;color:var(--primary)}
+/* 一键补记胶囊（提醒卡内） */
+.qrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.qpill{display:inline-flex;align-items:center;gap:5px;background:#fff;border-radius:999px;
+  padding:8px 15px;font-size:15.5px;font-weight:800;color:#6D4D0F;box-shadow:0 1px 5px rgba(180,120,20,.20)}
+.qpill svg{color:var(--amber)}
+/* 本轮优化说明卡 */
+.opt{flex:1;min-width:280px;background:#F7F9FB;border-radius:18px;padding:20px 22px}
+.opt .oi{font-size:13px;font-weight:800;color:#fff;background:var(--primary);display:inline-block;
+  border-radius:8px;padding:2px 9px;margin-bottom:10px}
+.opt b{font-size:16px;display:block;margin-bottom:8px}
+.opt p{font-size:13.5px;color:var(--sub);line-height:1.9}
+.homebar{height:22px;background:#fff;display:flex;align-items:center;justify-content:center}
+.homebar i{width:130px;height:5px;border-radius:3px;background:#101418;display:block}
+
+/* 分段控件 */
+.seg{display:flex;background:#E9EDF1;border-radius:16px;padding:5px;margin-bottom:14px}
+.seg .s{flex:1;text-align:center;font-size:16.5px;font-weight:600;color:var(--sub);padding:12px 0;border-radius:12px}
+.seg .s.on{background:#fff;color:var(--ink);font-weight:800;box-shadow:var(--shadow-sm)}
+
+/* 统计卡 */
+.stats{display:flex;gap:10px}
+.stat{flex:1;background:#fff;border-radius:18px;padding:14px 10px;text-align:center;box-shadow:var(--shadow)}
+.stat .ic{width:34px;height:34px;border-radius:10px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center}
+.stat .v{font-size:25px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.stat .v small{font-size:13px;font-weight:600;color:var(--sub)}
+.stat .l{font-size:14px;color:var(--sub);margin-top:3px}
+.subline{font-size:15px;color:var(--sub);text-align:center;line-height:1.7;padding:14px 8px}
+
+/* 时段均值 */
+.pa{display:flex;align-items:center;gap:12px;padding:11px 0;min-height:60px}
+.pa .pl{width:76px;font-size:16.5px;font-weight:800;flex:none}
+.pa .track{flex:1;height:12px;border-radius:6px;background:#EEF1F5;overflow:hidden}
+.pa .bar{height:100%;border-radius:6px}
+.pa .pv{width:118px;text-align:right;font-size:14.5px;color:var(--sub);flex:none}
+.pa .pv b{font-size:19px;color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+
+/* 日期胶囊组 */
+.gchip{display:inline-block;font-size:14.5px;font-weight:800;color:var(--sub);
+  background:#EEF1F5;border-radius:999px;padding:6px 14px;margin:14px 0 2px}
+
+/* 我的页 */
+.profile{display:flex;align-items:center;gap:16px}
+.avatar{width:64px;height:64px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,var(--primary2),var(--primary));color:#fff;font-size:27px;font-weight:800;
+  box-shadow:0 6px 16px rgba(11,125,94,.28)}
+.pname{font-size:19px;font-weight:800}
+.psync{display:flex;align-items:center;gap:7px;font-size:15.5px;font-weight:700;color:var(--primary);margin-top:5px}
+.menu{display:flex;align-items:center;gap:14px;padding:15px 2px;min-height:80px;border-bottom:1.5px solid var(--line2)}
+.menu:last-child{border-bottom:none}
+.menu .tile{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.tile.green{background:var(--ok-bg);color:var(--primary)}
+.tile.amber{background:var(--amber-bg);color:var(--amber)}
+.tile.blue{background:var(--blue-bg);color:var(--blue-ink)}
+.tile.gray{background:#EEF1F5;color:#5A6270}
+.menu .mt{flex:1;font-size:18px;font-weight:700}
+.menu .chev{color:#B9C2CE;flex:none}
+.verline{display:flex;align-items:center;justify-content:space-between;padding:10px 2px}
+.verline .vt{font-size:18px;font-weight:700}
+.verline .vv{font-size:15.5px;color:var(--sub)}
+.disclaim{font-size:13.5px;color:#7A8291;line-height:1.85;text-align:center;padding:8px 18px 16px}
+
+/* 录入页 */
+.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 4px}
+.topbar .tt{font-size:21px;font-weight:800}
+.closebtn{width:44px;height:44px;border-radius:50%;background:#EBEFF3;color:#4E5665;display:flex;align-items:center;justify-content:center}
+.backbtn{width:44px;height:44px;border-radius:50%;background:#EBEFF3;color:#4E5665;display:flex;align-items:center;justify-content:center}
+.stepind{display:flex;align-items:center;gap:12px;margin:12px 2px 16px}
+.stepind .segs{display:flex;gap:5px}
+.stepind .sg{width:26px;height:6px;border-radius:3px;background:#DCE2E8}
+.stepind .sg.on{background:var(--primary)}
+.stepind .tx{font-size:15.5px;font-weight:700;color:var(--sub)}
+.valcard{background:#F5F8F7;border-radius:var(--r-card);padding:30px 16px 26px;text-align:center;box-shadow:inset 0 0 0 1.5px #E7EEEA}
+.valcard .vv{font-size:64px;font-weight:800;letter-spacing:-1.5px;font-variant-numeric:tabular-nums;line-height:1.05}
+.valcard .vv.ph{color:#B7BFC9}
+.valcard .vu{font-size:17px;color:var(--sub);font-weight:600;margin-top:6px}
+.hintline{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700;margin:16px 2px 4px;min-height:24px}
+.hintline.m{color:var(--sub)} .hintline.g{color:var(--ok-ink)} .hintline.b{color:var(--high-ink)}
+.quick{display:flex;gap:10px;margin:12px 0 4px}
+.qchip{border:1.6px solid #E3E9EE;background:#fff;border-radius:999px;padding:10px 22px;
+  font-size:17px;font-weight:700;color:#333B48;box-shadow:var(--shadow-sm)}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 6px}
+.key{height:62px;background:#fff;border:1.6px solid #E7ECEF;border-radius:16px;display:flex;
+  align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--ink);
+  box-shadow:0 2px 0 rgba(23,43,77,.05)}
+.key.fn{background:#EEF1F5;color:#3C4452;font-size:19px;font-weight:700;gap:6px}
+.btn-primary{height:78px;border-radius:var(--r-card);background:linear-gradient(150deg,var(--primary2),var(--primary));
+  color:#fff;font-size:21px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-primary);margin-top:14px}
+.btn-primary.dis{background:#C6D0CB;box-shadow:none}
+.btn-ghost{height:56px;border-radius:var(--r-inner);background:#EBEFF3;color:#333B48;font-size:17px;
+  font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px}
+
+/* 汇总行 */
+.sumcard{display:flex;align-items:center;gap:12px;background:#F5F8F7;border-radius:var(--r-card);padding:18px 20px;box-shadow:inset 0 0 0 1.5px #E7EEEA}
+.sumcard .sv{font-size:46px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.sumcard .su{font-size:17px;color:var(--sub);font-weight:600}
+.sumcard .st{margin-left:auto}
+
+/* 时段格 */
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
+.pcell{position:relative;height:66px;border:2.5px solid #E3E9EE;border-radius:18px;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#333B48}
+.pcell.sel{border-color:var(--primary);background:var(--ok-bg);color:var(--deep);font-weight:800}
+.pcell .recmd{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--primary);
+  color:#fff;font-size:12.5px;font-weight:700;border-radius:999px;padding:3px 12px;box-shadow:var(--shadow-sm)}
+.pcell.sel .corner{position:absolute;right:-8px;top:-8px;width:26px;height:26px;border-radius:50%;
+  background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 8px rgba(11,125,94,.35)}
+.foldlink{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--primary);
+  font-size:16.5px;font-weight:700;padding:18px 0 4px}
+
+/* 时间/备注行 */
+.timerow{display:flex;align-items:center;gap:12px;border:1.6px solid #E3E9EE;border-radius:var(--r-inner);padding:14px 16px;background:#fff}
+.timerow .tt{flex:1;font-size:17.5px;font-weight:800}
+.minichip{display:inline-flex;align-items:center;gap:6px;background:#E3EFE9;color:var(--primary);
+  font-size:15.5px;font-weight:700;border-radius:999px;padding:10px 16px}
+.noteip{border:1.6px solid #E3E9EE;border-radius:var(--r-inner);padding:15px 16px;background:#fff;
+  color:#9AA3B0;font-size:16.5px}
+
+/* 提醒页 */
+.remcard .hrow{display:flex;align-items:center;justify-content:space-between}
+.remcard .rn{font-size:19px;font-weight:800}
+.switch{width:56px;height:32px;border-radius:999px;background:var(--primary);position:relative;flex:none}
+.switch::after{content:"";position:absolute;right:3px;top:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+.switch.off{background:#D5DCE3}
+.switch.off::after{right:auto;left:3px}
+.timetile{display:flex;align-items:center;justify-content:space-between;background:#F5F8F7;border-radius:var(--r-inner);padding:14px 18px;margin-top:12px;box-shadow:inset 0 0 0 1.5px #E7EEEA}
+.timetile .tv{font-size:34px;font-weight:800;color:var(--deep);letter-spacing:.5px;font-variant-numeric:tabular-nums}
+.timetile .tip{font-size:14.5px;color:var(--sub)}
+.chips2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.tchip{border:1.6px solid #E3E9EE;border-radius:14px;background:#fff;padding:12px 8px;text-align:center;
+  font-size:15.5px;font-weight:700;color:#333B48}
+.tchip.sel{border-color:var(--primary);background:var(--ok-bg);color:var(--deep);display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-sub{height:64px;border-radius:18px;background:#E3EFE9;color:var(--primary);font-size:17.5px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px}
+.statusrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1.5px solid var(--line2)}
+.statusrow:last-child{border-bottom:none}
+.statusrow .si{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.statusrow .stx{flex:1;font-size:15.5px;font-weight:700;line-height:1.5}
+.statusrow .act{background:var(--ok-bg);color:var(--primary);font-size:14.5px;font-weight:800;border-radius:999px;padding:9px 16px;flex:none}
+.si.bad{background:var(--high-bg);color:var(--high)}
+.si.warn{background:var(--low-bg);color:var(--low)}
+.si.good{background:var(--ok-bg);color:var(--ok)}
+.stx.good{color:var(--ok-ink)} .stx.bad{color:var(--high-ink)} .stx.warn{color:var(--low-ink)} .stx.dim{color:var(--sub)}
+</style>
+</head>
+<body>
+
+<!-- ============ SVG 图标库（线性、统一笔画） ============ -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="i-home" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.2 10.8 12 4.4l7.8 6.4V19a1.3 1.3 0 0 1-1.3 1.3h-4.2v-5.2H9.7v5.2H5.5A1.3 1.3 0 0 1 4.2 19z"/></g>
+    <g id="i-chart" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 4v16.4h16.8"/><path d="m7 16.4 4-5 3.1 2.5 5.3-6.2"/></g>
+    <g id="i-person" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.1" r="3.6"/><path d="M5 19.8c1.6-3.3 4.3-4.8 7-4.8s5.4 1.5 7 4.8"/></g>
+    <g id="i-plus" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5.2v13.6M5.2 12h13.6"/></g>
+    <g id="i-clock" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12.4" r="7.6"/><path d="M12 8.4v4.3l2.9 1.7"/></g>
+    <g id="i-target" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="7.4"/><circle cx="12" cy="12" r="3.1"/><circle cx="12" cy="12" r=".7" fill="currentColor" stroke="none"/></g>
+    <g id="i-bell" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 16.3v-4.8a5.4 5.4 0 0 1 10.8 0v4.8l1.4 2.2H5.2z"/><path d="M10.1 20.6a2.1 2.1 0 0 0 3.8 0"/></g>
+    <g id="i-upload" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.4v10.8"/><path d="m7.6 8.8 4.4-4.4 4.4 4.4"/><path d="M4.6 15.6v2.9a1.6 1.6 0 0 0 1.6 1.6h11.6a1.6 1.6 0 0 0 1.6-1.6v-2.9"/></g>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.6v10.8"/><path d="m7.6 11 4.4 4.4 4.4-4.4"/><path d="M4.6 15.6v2.9a1.6 1.6 0 0 0 1.6 1.6h11.6a1.6 1.6 0 0 0 1.6-1.6v-2.9"/></g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="9" y="9" width="10.8" height="10.8" rx="2.6"/><path d="M6.6 15H6a1.6 1.6 0 0 1-1.6-1.6V6A1.6 1.6 0 0 1 6 4.4h7.4A1.6 1.6 0 0 1 15 6v.6"/></g>
+    <g id="i-chev" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9.8 5.6 6.4 6.4-6.4 6.4"/></g>
+    <g id="i-chevd" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5.6 9.4 6.4 6.4 6.4-6.4"/></g>
+    <g id="i-chevl" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 5.6 8 12l6.4 6.4"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5.2 12.6 4.4 4.4 9.2-10"/></g>
+    <g id="i-cross" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m6.4 6.4 11.2 11.2M17.6 6.4 6.4 17.6"/></g>
+    <g id="i-flame" fill="currentColor"><path d="M12 3.6c1.9 2.7 5.3 5 5.3 9.1a5.3 5.3 0 1 1-10.6 0c0-1.7.7-3.2 1.7-4.4.3 1 .9 1.8 1.7 2.3-.3-2.8.5-5.1 1.9-7z"/><path d="M12 12.4c.9 1.3 2.3 2.2 2.3 3.9a2.3 2.3 0 1 1-4.6 0c0-1.7 1.4-2.6 2.3-3.9z" fill="#fff" opacity=".35"/></g>
+    <g id="i-drop" fill="currentColor"><path d="M12 3.4C12 3.4 5.7 10.4 5.7 14.7a6.3 6.3 0 0 0 12.6 0C18.3 10.4 12 3.4 12 3.4z"/></g>
+    <g id="i-dropo" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3.8C12 3.8 6 10.5 6 14.6a6 6 0 0 0 12 0C18 10.5 12 3.8 12 3.8z"/></g>
+    <g id="i-alert" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.8v5"/><circle cx="12" cy="16" r=".9" fill="currentColor" stroke="none"/></g>
+    <g id="i-trash" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 7h14.4"/><path d="M9.4 7V5.6A1.6 1.6 0 0 1 11 4h2a1.6 1.6 0 0 1 1.6 1.6V7"/><path d="m6.8 7 .9 11.9A1.6 1.6 0 0 0 9.3 20.4h5.4a1.6 1.6 0 0 0 1.6-1.5L17.2 7"/></g>
+    <g id="i-cal" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.2" y="5.6" width="15.6" height="14.2" rx="2.6"/><path d="M4.2 10.4h15.6M8.6 3.6v3.4M15.4 3.6v3.4"/></g>
+    <g id="i-pencil" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m14.9 5.4 3.7 3.7-10.4 10.4-4.4.7.7-4.4z"/></g>
+    <g id="i-shield" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 19 6v6c0 4.5-3 7.7-7 9.1-4-1.4-7-4.6-7-9.1V6z"/><path d="m9 12 2.2 2.2 4.4-4.9"/></g>
+    <g id="i-scale" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 19.4h14"/><path d="M7.2 19.4V9.8M12 19.4V5.4M16.8 19.4v-7"/></g>
+    <g id="i-updown" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4.4v15.2M8 4.4 4.6 7.8M8 4.4l3.4 3.4"/><path d="M16 19.6V4.4M16 19.6l-3.4-3.4M16 19.6l3.4-3.4"/></g>
+    <g id="i-star" fill="currentColor"><path d="m12 3.6 2.5 5.2 5.7.8-4.1 4 1 5.7-5.1-2.7-5.1 2.7 1-5.7-4.1-4 5.7-.8z"/></g>
+    <g id="i-battery" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="7.4" width="14.4" height="9.2" rx="2.4"/><path d="M20.8 10.4v3.2"/><path d="m8 12 2 2 4-4.4" opacity=".9"/></g>
+  </defs>
+</svg>
+
+<!-- ============ 页头 ============ -->
+<div class="page-head">
+  <h1>糖记 · UI 精修设计稿<span class="ver">V2.2</span></h1>
+  <p>V2.1 完成视觉精修（矢量图标 / 卡片投影 / 虚线空态 / 渐变图表）；<b>V2.2 按反馈解决"＋按钮不居中"，并做一轮聚焦核心的产品优化</b>：五槽对称底栏（＋数学居中 + "记录"文字标签）、提醒升级为一级 Tab、提醒卡未记时段改"一键补记"胶囊。确认后按本稿改造 App。</p>
+</div>
+
+<!-- ============ 现状 vs 目标 ============ -->
+<div class="compare">
+  <div class="shot">
+    <img src="artifacts/07-mumu-current.png" alt="当前实现（MuMu 截图）">
+    <div class="notes">
+      <h3>现状诊断（上图为 MuMu 实机）</h3>
+      <ul>
+        <li><i class="badxx">1</i><span>底栏 / 火焰 / 箭头全是<b>彩色 emoji</b>，风格杂、显廉价</span></li>
+        <li><i class="badxx">2</i><span>空态是<b>大灰块</b>，没有图标与虚线框，像占位符没做完</span></li>
+        <li><i class="badxx">3</i><span>欢迎卡是<b>绿色 ✓</b>——勾号是"完成"语义，首用场景不搭</span></li>
+        <li><i class="badxx">4</i><span>卡片<b>全平无投影</b>，白卡和大背景糊在一起，没有层次</span></li>
+        <li><i class="badxx">5</i><span>标题、标签、数值层级弱，缺设计感细节</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 本轮产品优化 ============ -->
+<div class="board">
+  <h2>本轮产品优化（V2.2）· 聚焦核心 <small>核心链路 = 记 → 看 → 规律；这一轮围绕"记"压缩步骤</small></h2>
+  <div class="tokrow">
+    <div class="opt">
+      <div class="oi">01 修正</div>
+      <b>＋按钮数学居中：五槽对称底栏</b>
+      <p>原布局 [今天][趋势][＋][我的] 四格等宽，＋落在 62.5% 处显得歪。改为 <b>[今天][趋势][＋记录][提醒][我的]</b> 五槽——左右各两格等宽，＋严格居中；并在下方加"记录"文字，第一眼就懂这是最主要的动作。</p>
+    </div>
+    <div class="opt">
+      <div class="oi">02 聚焦</div>
+      <b>提醒升级为一级 Tab</b>
+      <p>定时提醒是安卓版最核心的差异能力，原先藏在"我的 → 提醒设置"两层里。提到底栏后一点即达（查看/开关/改时间/可靠性检查）；"我的"页同步移除该项，更精简。</p>
+    </div>
+    <div class="opt">
+      <div class="oi">03 提速</div>
+      <b>提醒卡"一键补记"</b>
+      <p>首页提醒卡里没记的时段（如空腹）从纯文字改为可点胶囊「＋空腹」：点一下直接进入录入页、<b>并把该时段预选好</b>——核心链路 3 步减为 2 步（点胶囊 → 输数值 → 保存）。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 设计规范 ============ -->
+<div class="board">
+  <h2>设计规范 <small>确认后同步落到 Compose 主题与矢量资源</small></h2>
+  <div class="tokrow">
+    <div class="tok">
+      <div class="cap">色板</div>
+      <div class="swatches">
+        <div class="sw"><div class="c" style="background:#0B7D5E"></div><div class="n">主色<br>#0B7D5E</div></div>
+        <div class="sw"><div class="c" style="background:#12A077"></div><div class="n">主色亮<br>#12A077</div></div>
+        <div class="sw"><div class="c" style="background:#E1F5EC"></div><div class="n">达标浅底<br>#E1F5EC</div></div>
+        <div class="sw"><div class="c" style="background:#FFF4E2"></div><div class="n">提醒底<br>#FFF4E2</div></div>
+        <div class="sw"><div class="c" style="background:#E8F0FD"></div><div class="n">数据蓝底<br>#E8F0FD</div></div>
+        <div class="sw"><div class="c" style="background:#171B21"></div><div class="n">正文<br>#171B21</div></div>
+        <div class="sw"><div class="c" style="background:#4E5665"></div><div class="n">次要<br>#4E5665</div></div>
+        <div class="sw"><div class="c" style="background:#F3F5F7;box-shadow:inset 0 0 0 1px #E1E6EB"></div><div class="n">背景<br>#F3F5F7</div></div>
+      </div>
+    </div>
+    <div class="tok">
+      <div class="cap">字号阶梯</div>
+      <div class="typescale">
+        <div class="ts"><span class="tagx">大数值 72/800</span><span class="demo" style="font-size:40px;font-weight:800">7.2</span></div>
+        <div class="ts"><span class="tagx">标题 24/800</span><span class="demo" style="font-size:24px;font-weight:800">10月11日</span></div>
+        <div class="ts"><span class="tagx">卡片题 19/800</span><span class="demo" style="font-size:19px;font-weight:800">今日记录</span></div>
+        <div class="ts"><span class="tagx">正文 18/400</span><span class="demo" style="font-size:18px">餐后 · 达标</span></div>
+        <div class="ts"><span class="tagx">次要 16/400</span><span class="demo" style="font-size:16px;color:#4E5665">最近一次 · 11:02</span></div>
+        <div class="ts"><span class="tagx">图表字 13</span><span class="demo" style="font-size:13px;color:#6A7280">10/8</span></div>
+      </div>
+    </div>
+    <div class="tok">
+      <div class="cap">圆角 / 投影</div>
+      <div class="comprow">
+        <div style="width:120px;height:70px;background:#fff;border-radius:20px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:13px;color:#4E5665">卡片 20px</div>
+        <div style="width:120px;height:70px;background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;font-size:13px;color:#4E5665">内层 16px</div>
+        <div style="width:96px;height:44px;background:linear-gradient(150deg,#12A077,#0B7D5E);border-radius:999px;box-shadow:var(--shadow-primary);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700">主按钮</div>
+      </div>
+    </div>
+    <div class="tok">
+      <div class="cap">图标库（全部矢量，无 emoji）</div>
+      <div class="iconrow">
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-home"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-chart"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-person"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-clock"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-target"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-bell"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-flame"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-dropo"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-upload"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-download"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-copy"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-shield"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-cal"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-trash"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-check"/></svg></div>
+        <div class="iconcell"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-alert"/></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 屏幕设计稿 ============ -->
+<div class="frames">
+
+  <!-- ---------- 1 今天 · 空态 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div class="thead">
+          <div class="date">10月11日<small>周日</small></div>
+          <div class="streak"><span class="fl"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-flame"/></svg></span><span class="tx">连续 0 天</span></div>
+        </div>
+        <div class="remind done">
+          <div class="tile"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-dropo"/></svg></div>
+          <div><div class="rt">欢迎使用糖记</div><div class="rd">测完血糖，点下面的 ＋ 记第一笔</div></div>
+        </div>
+        <div class="card">
+          <div class="dash">
+            <div class="ico"><svg width="26" height="26" viewBox="0 0 24 24"><use href="#i-dropo"/></svg></div>
+            <div class="d1">还没有记录</div>
+            <div class="d2">点下面的 ＋ 记第一笔</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct"><span class="t">今日记录</span></div>
+          <div class="dash" style="padding:22px 16px">
+            <div class="d1">今天还没有记录</div>
+            <div class="d2">测完血糖点下方 ＋，很快记完</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct"><span class="t">近 7 天趋势</span></div>
+          <div class="dash" style="padding:20px 16px">
+            <div class="d2">再记几天，这里会出现 7 天趋势线</div>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab on"><svg viewBox="0 0 24 24"><use href="#i-home"/></svg><span>今天</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>趋势</span></div>
+        <div class="tabmid"><div class="plus"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></div><div class="plabel">记录</div></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg><span>提醒</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-person"/></svg><span>我的</span></div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div></div>
+    <figcaption class="cap"><b>今天 · 空态（首用）</b>
+      <ul><li>欢迎卡改为品牌绿 + 水滴图标（修正 ✓ 的语义错误）</li>
+      <li>三处空态统一为"虚线卡 + 圆形图标 + 双行引导"</li></ul>
+    </figcaption>
+  </figure>
+
+  <!-- ---------- 2 今天 · 数据态 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div class="thead">
+          <div class="date">10月11日<small>周日</small></div>
+          <div class="streak"><span class="fl"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-flame"/></svg></span><span class="tx">连续 2 天</span></div>
+        </div>
+        <div class="remind warn">
+          <div class="tile"><svg width="24" height="24" viewBox="0 0 24 24"><use href="#i-clock"/></svg></div>
+          <div style="flex:1">
+            <div class="rt">还有 2 个时段没记</div>
+            <div class="rd" style="margin-bottom:2px">点一下直接补记：</div>
+            <div class="qrow" style="margin-top:4px">
+              <span class="qpill"><svg width="15" height="15" viewBox="0 0 24 24"><use href="#i-plus"/></svg>空腹</span>
+              <span class="qpill"><svg width="15" height="15" viewBox="0 0 24 24"><use href="#i-plus"/></svg>午餐前</span>
+            </div>
+          </div>
+        </div>
+        <div class="card hero">
+          <svg class="wm" width="120" height="120" viewBox="0 0 24 24"><use href="#i-drop"/></svg>
+          <div class="hrow1">
+            <span class="htime">最近一次 · 10月11日 11:02</span>
+            <span class="pchip">早餐后</span>
+          </div>
+          <div class="hnum"><span class="hv">7.2</span><span class="hu">mmol/L</span></div>
+          <div class="hstat"><span class="stag st-ok">✓ 达标</span><span class="hgoal">早餐后目标 4.4–10.0</span></div>
+          <div class="hnote">备注：豆浆油条</div>
+        </div>
+        <div class="card">
+          <div class="ct"><span class="t">今日记录</span><span class="m">共 2 条</span></div>
+          <div class="rrow">
+            <span class="rdot ok"></span>
+            <div class="mid"><div class="p">早餐后<small>· 豆浆油条</small></div><div class="tm">11:02 · 达标</div></div>
+            <div class="num ok">7.2</div>
+          </div>
+          <div class="rrow">
+            <span class="rdot ok"></span>
+            <div class="mid"><div class="p">午餐前</div><div class="tm">11:00 · 达标</div></div>
+            <div class="num ok">6.5</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct"><span class="t">近 7 天趋势</span><span class="m" style="color:var(--primary);font-weight:800">看完整趋势 ›</span></div>
+          <svg width="100%" height="92" viewBox="0 0 322 92" style="margin-top:4px">
+            <defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#0E9C73" stop-opacity=".18"/><stop offset="1" stop-color="#0E9C73" stop-opacity="0"/></linearGradient></defs>
+            <rect x="4" y="22" width="314" height="56" rx="6" fill="#0E9C73" opacity=".10"/>
+            <path d="M4,66 L60,58 L116,62 L172,50 L228,56 L284,44 L318,52 L318,86 L4,86 Z" fill="url(#mg)"/>
+            <polyline points="4,66 60,58 116,62 172,50 228,56 284,44 318,52" fill="none" stroke="#0B7D5E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="4" cy="66" r="4.5" fill="#0E9C73" stroke="#fff" stroke-width="2"/>
+            <circle cx="60" cy="58" r="4.5" fill="#0E9C73" stroke="#fff" stroke-width="2"/>
+            <circle cx="116" cy="62" r="4.5" fill="#0E9C73" stroke="#fff" stroke-width="2"/>
+            <circle cx="172" cy="50" r="4.5" fill="#0E9C73" stroke="#fff" stroke-width="2"/>
+            <circle cx="228" cy="56" r="4.5" fill="#0E9C73" stroke="#fff" stroke-width="2"/>
+            <circle cx="284" cy="44" r="4.5" fill="#0E9C73" stroke="#fff" stroke-width="2"/>
+            <circle cx="318" cy="52" r="4.5" fill="#0E9C73" stroke="#fff" stroke-width="2"/>
+          </svg>
+          <div class="m" style="font-size:14.5px;margin-top:6px">绿底是目标范围 · 每天 1 个点（日平均）</div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab on"><svg viewBox="0 0 24 24"><use href="#i-home"/></svg><span>今天</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>趋势</span></div>
+        <div class="tabmid"><div class="plus"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></div><div class="plabel">记录</div></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg><span>提醒</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-person"/></svg><span>我的</span></div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div></div>
+    <figcaption class="cap"><b>今天 · 数据态</b>
+      <ul><li>大卡右上角加水滴水印；状态改为「胶囊 ✓ 达标 + 目标小字」组合</li>
+      <li>记录行状态圆点加柔光圈；数值加重、制表数字对齐</li>
+      <li>迷你趋势加渐变面积，标题入口改矢量箭头</li>
+      <li><b>提醒卡时段改「＋空腹」可点胶囊 → 一点直达补记（链路少一步）</b></li></ul>
+    </figcaption>
+  </figure>
+
+  <!-- ---------- 3 趋势 · 图表+统计 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div style="height:10px"></div>
+        <div class="seg"><div class="s on">近7天</div><div class="s">近30天</div><div class="s">近90天</div></div>
+        <div class="card">
+          <div class="ct"><span class="t">血糖趋势</span><span class="m">近7天 · 8 次</span></div>
+          <svg width="100%" height="238" viewBox="0 0 342 238" style="margin-top:6px">
+            <defs>
+              <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#0E9C73" stop-opacity=".20"/><stop offset="1" stop-color="#0E9C73" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- 目标区间带 4.4–10.0 -->
+            <rect x="38" y="36.9" width="296" height="128.5" rx="8" fill="#0E9C73" opacity=".10"/>
+            <!-- 网格与 y 轴 -->
+            <g stroke="#EDF1F5" stroke-width="1.5">
+              <line x1="38" y1="151.6" x2="334" y2="151.6"/><line x1="38" y1="105.7" x2="334" y2="105.7"/>
+              <line x1="38" y1="59.9" x2="334" y2="59.9"/><line x1="38" y1="14" x2="334" y2="14"/>
+            </g>
+            <g font-size="13" fill="#6A7280" text-anchor="end" font-family="inherit">
+              <text x="31" y="156">5</text><text x="31" y="110">7</text><text x="31" y="64">9</text><text x="31" y="19">11</text>
+            </g>
+            <!-- 空腹上限虚线 -->
+            <line x1="38" y1="105.7" x2="334" y2="105.7" stroke="#0B7D5E" stroke-width="1.6" stroke-dasharray="7 7" opacity=".6"/>
+            <text x="333" y="99" font-size="12.5" fill="#0B7D5E" text-anchor="end" font-weight="700">空腹上限 7.0</text>
+            <!-- 渐变面积 + 日均线 -->
+            <path d="M44,124.1 85.4,87.4 126.9,131 168.3,73.6 209.7,110.3 251.1,103.4 292.6,55.3 334,117.2 334,186 44,186 Z" fill="url(#ag)"/>
+            <polyline points="44,124.1 85.4,87.4 126.9,131 168.3,73.6 209.7,110.3 251.1,103.4 292.6,55.3 334,117.2"
+              fill="none" stroke="#0B7D5E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 数据点 -->
+            <g stroke="#fff" stroke-width="2">
+              <circle cx="44" cy="124.1" r="5.5" fill="#0E9C73"/>
+              <circle cx="85.4" cy="87.4" r="5.5" fill="#0E9C73"/>
+              <circle cx="126.9" cy="131" r="5.5" fill="#B45309"/>
+              <circle cx="168.3" cy="73.6" r="5.5" fill="#0E9C73"/>
+              <circle cx="209.7" cy="110.3" r="5.5" fill="#0E9C73"/>
+              <circle cx="251.1" cy="103.4" r="5.5" fill="#0E9C73"/>
+              <circle cx="292.6" cy="55.3" r="5.5" fill="#0E9C73"/>
+              <circle cx="334" cy="117.2" r="5.5" fill="#0E9C73"/>
+            </g>
+            <g font-size="13" fill="#6A7280" text-anchor="middle" font-family="inherit">
+              <text x="44" y="226">10/5</text><text x="141" y="226">10/8</text>
+              <text x="238" y="226">10/10</text><text x="330" y="226">10/11</text>
+            </g>
+          </svg>
+          <div class="m" style="text-align:center;margin-top:6px">点图上的圆点，看那一次的详情</div>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <div class="ic" style="background:var(--ok-bg);color:var(--primary)"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-scale"/></svg></div>
+            <div class="v">7.1 <small>mmol/L</small></div><div class="l">平均血糖</div>
+          </div>
+          <div class="stat">
+            <div class="ic" style="background:var(--amber-bg);color:var(--amber)"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-target"/></svg></div>
+            <div class="v">88 <small>%</small></div><div class="l">达标比例</div>
+          </div>
+          <div class="stat">
+            <div class="ic" style="background:var(--blue-bg);color:var(--blue-ink)"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-updown"/></svg></div>
+            <div class="v">9.2<small> / 5.8</small></div><div class="l">最高 / 最低</div>
+          </div>
+        </div>
+        <div class="subline">共 8 次记录 · 连续记录 2 天<br>达标比例 = 在目标范围内的次数占比</div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-home"/></svg><span>今天</span></div>
+        <div class="tab on"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>趋势</span></div>
+        <div class="tabmid"><div class="plus"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></div><div class="plabel">记录</div></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg><span>提醒</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-person"/></svg><span>我的</span></div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div></div>
+    <figcaption class="cap"><b>趋势 · 图表与统计</b>
+      <ul><li>日均线下加渐变面积，坐标文字加大加深</li>
+      <li>统计卡加图标标签，数值字重与层级强化</li>
+      <li>分段控件选中态白胶囊+投影</li></ul>
+    </figcaption>
+  </figure>
+
+  <!-- ---------- 4 趋势 · 时段均值+历史 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div style="height:10px"></div>
+        <div class="card">
+          <div class="ct"><span class="t">各时段平均</span><span class="m">近7天</span></div>
+          <div class="pa"><span class="pl">空腹</span><div class="track"><div class="bar" style="width:53%;background:#0E9C73"></div></div><span class="pv"><b>5.8</b> (1次)</span></div>
+          <div class="pa"><span class="pl">早餐后</span><div class="track"><div class="bar" style="width:68%;background:#0E9C73"></div></div><span class="pv"><b>7.4</b> (2次)</span></div>
+          <div class="pa"><span class="pl">午餐前</span><div class="track"><div class="bar" style="width:59%;background:#0E9C73"></div></div><span class="pv"><b>6.5</b> (1次)</span></div>
+          <div class="pa"><span class="pl">午餐后</span><div class="track"></div><span class="pv">还没记过</span></div>
+          <div class="pa"><span class="pl">晚餐后</span><div class="track"><div class="bar" style="width:81%;background:#B45309"></div></div><span class="pv"><b>8.9</b> (1次)</span></div>
+          <div class="pa"><span class="pl">睡前</span><div class="track"></div><span class="pv">还没记过</span></div>
+          <div class="m" style="font-size:14.5px;margin-top:10px">「空腹」按空腹目标判断，其余按非空腹目标判断</div>
+        </div>
+        <div class="card">
+          <div class="ct"><span class="t">历史记录</span><span class="m">共 8 条</span></div>
+          <span class="gchip">10月11日 周日</span>
+          <div class="rrow">
+            <span class="rdot ok"></span>
+            <div class="mid"><div class="p">早餐后<small>· 豆浆油条</small></div><div class="tm">11:02 · 达标</div></div>
+            <div class="num ok">7.2</div>
+          </div>
+          <div class="rrow">
+            <span class="rdot ok"></span>
+            <div class="mid"><div class="p">午餐前</div><div class="tm">11:00 · 达标</div></div>
+            <div class="num ok">6.5</div>
+          </div>
+          <span class="gchip">10月10日 周六</span>
+          <div class="rrow">
+            <span class="rdot low"></span>
+            <div class="mid"><div class="p">空腹</div><div class="tm">07:05 · 偏低</div></div>
+            <div class="num low">4.1</div>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-home"/></svg><span>今天</span></div>
+        <div class="tab on"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>趋势</span></div>
+        <div class="tabmid"><div class="plus"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></div><div class="plabel">记录</div></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg><span>提醒</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-person"/></svg><span>我的</span></div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div></div>
+    <figcaption class="cap"><b>趋势 · 时段均值与历史</b>
+      <ul><li>进度条加高加圆、右值数字放大</li>
+      <li>历史按日分组加"日期胶囊"，一眼看清哪一天</li></ul>
+    </figcaption>
+  </figure>
+
+  <!-- ---------- 5 我的 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div style="height:10px"></div>
+        <div class="card">
+          <div class="profile">
+            <div class="avatar">糖</div>
+            <div>
+              <div class="pname">糖友</div>
+              <div class="psync"><svg width="16" height="16" viewBox="0 0 24 24" style="color:var(--primary)"><use href="#i-shield"/></svg>数据存本机（无需联网）</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:4px 16px">
+          <div class="menu">
+            <span class="tile green"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-target"/></svg></span>
+            <span class="mt">目标范围设置</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </div>
+        </div>
+        <div class="card" style="padding:4px 16px">
+          <div class="menu">
+            <span class="tile blue"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-upload"/></svg></span>
+            <span class="mt">导出数据文件（发微信 / 存档）</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </div>
+          <div class="menu">
+            <span class="tile blue"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-download"/></svg></span>
+            <span class="mt">导入数据文件（换手机恢复）</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </div>
+          <div class="menu">
+            <span class="tile green"><svg width="22" height="22" viewBox="0 0 24 24"><use href="#i-copy"/></svg></span>
+            <span class="mt">复制全部数据（看病时给医生）</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chev"/></svg></span>
+          </div>
+        </div>
+        <div class="card" style="padding:6px 16px">
+          <div class="verline"><span class="vt">版本</span><span class="vv">V2.1 适老化版</span></div>
+        </div>
+        <div class="disclaim">本工具只做记录和参考，不能代替医生诊断。<br>血糖管理请听医生的话，数值异常请及时就医。</div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-home"/></svg><span>今天</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>趋势</span></div>
+        <div class="tabmid"><div class="plus"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></div><div class="plabel">记录</div></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg><span>提醒</span></div>
+        <div class="tab on"><svg viewBox="0 0 24 24"><use href="#i-person"/></svg><span>我的</span></div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div></div>
+    <figcaption class="cap"><b>我的</b>
+      <ul><li>菜单图标全部矢量化，配彩色圆角底</li>
+      <li>头像加渐光晕；同步状态行前置盾牌图标</li>
+      <li>箭头统一为细线性 chevron</li>
+      <li><b>提醒已升级为一级 Tab，本页移除该项（更聚焦）</b></li></ul>
+    </figcaption>
+  </figure>
+
+  <!-- ---------- 6 录入 · 第 1 步 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div class="topbar"><span class="tt">记一笔血糖</span><span class="closebtn"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-cross"/></svg></span></div>
+        <div class="stepind"><span class="segs"><span class="sg on"></span><span class="sg"></span></span><span class="tx">第 1 步，共 2 步：输入数值</span></div>
+        <div class="valcard">
+          <div class="vv ph">6.5</div>
+          <div class="vu">mmol/L · 血糖数值</div>
+        </div>
+        <div class="hintline g"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-check"/></svg>输入好了，点「下一步」继续</div>
+        <div class="quick">
+          <span class="qchip">9.1</span><span class="qchip">7.5</span><span class="qchip">8.4</span>
+        </div>
+        <div class="keypad">
+          <div class="key">1</div><div class="key">2</div><div class="key">3</div>
+          <div class="key">4</div><div class="key">5</div><div class="key">6</div>
+          <div class="key">7</div><div class="key">8</div><div class="key">9</div>
+          <div class="key fn"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-trash"/></svg>删除</div>
+          <div class="key">0</div><div class="key">·</div>
+        </div>
+        <div class="btn-primary">下一步：选时段</div>
+      </div>
+    </div></div>
+    <figcaption class="cap"><b>录入 · 第 1 步（数值键盘）</b>
+      <ul><li>顶部加两段式步骤进度（当前段绿色）</li>
+      <li>数值卡换浅绿描边；合法时提示行带 ✓ 图标</li>
+      <li>键帽加浮起感（细边 + 底影），删除键用矢量图标</li></ul>
+    </figcaption>
+  </figure>
+
+  <!-- ---------- 7 录入 · 第 2 步 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div class="topbar"><span class="tt">记一笔血糖</span><span class="closebtn"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-cross"/></svg></span></div>
+        <div class="stepind"><span class="segs"><span class="sg on"></span><span class="sg on"></span></span><span class="tx">第 2 步，共 2 步：选时段后保存</span></div>
+        <div class="btn-ghost"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chevl"/></svg>上一步，改数值</div>
+        <div class="sumcard">
+          <span class="sv">6.5</span><span class="su">mmol/L</span>
+          <span class="st stag st-ok">✓ 达标</span>
+        </div>
+        <div class="hintline m" style="margin-top:18px">测量时段（已按时间推荐，点一下就能改）</div>
+        <div class="pgrid">
+          <div class="pcell">空腹</div>
+          <div class="pcell">早餐后</div>
+          <div class="pcell sel"><span class="recmd">推荐</span>午餐前<span class="corner"><svg width="14" height="14" viewBox="0 0 24 24"><use href="#i-check"/></svg></span></div>
+          <div class="pcell">午餐后</div>
+          <div class="pcell">晚餐前</div>
+          <div class="pcell">晚餐后</div>
+          <div class="pcell">睡前</div>
+          <div class="pcell">随机</div>
+        </div>
+        <div class="btn-primary">保 存</div>
+        <div class="foldlink"><svg width="18" height="18" viewBox="0 0 24 24"><use href="#i-chevd"/></svg>更多选项：修改时间 / 写备注</div>
+      </div>
+    </div></div>
+    <figcaption class="cap"><b>录入 · 第 2 步（选时段）</b>
+      <ul><li>选中态加"右上角 ✓ 圆标"，确认感更强</li>
+      <li>"推荐"角标改为顶部居中压边胶囊</li>
+      <li>汇总卡数值加大、状态改胶囊</li></ul>
+    </figcaption>
+  </figure>
+
+  <!-- ---------- 8 提醒设置 ---------- -->
+  <figure class="frame">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>9:41</span><span class="ri"><span class="bat"></span></span></div>
+      <div class="content">
+        <div class="thead"><div class="date">提醒</div></div>
+        <div class="m" style="margin:-8px 2px 14px;font-size:15.5px;color:var(--sub)">每天定时提醒测量血糖，最多两条</div>
+        <div class="card remcard">
+          <div class="hrow"><span class="rn">提醒 1</span><span class="switch"></span></div>
+          <div class="timetile"><span class="tv">07:00</span><span class="tip">点时间可以修改</span></div>
+          <div class="chips2">
+            <div class="tchip sel"><svg width="16" height="16" viewBox="0 0 24 24"><use href="#i-check"/></svg>该测空腹血糖啦</div>
+            <div class="tchip">记得测血糖哦</div>
+            <div class="tchip">该测餐后血糖啦</div>
+            <div class="tchip">睡前别忘了测血糖</div>
+          </div>
+        </div>
+        <div class="btn-sub"><svg width="19" height="19" viewBox="0 0 24 24"><use href="#i-star"/></svg>一键套用推荐组合（早 7:00 + 晚 21:30）</div>
+        <div class="card">
+          <div class="ct"><span class="t" style="font-size:19px">让提醒更可靠</span></div>
+          <div class="statusrow">
+            <span class="si good"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-bell"/></svg></span>
+            <span class="stx good">通知权限已开启</span>
+          </div>
+          <div class="statusrow">
+            <span class="si warn"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-clock"/></svg></span>
+            <span class="stx warn">精确定时未开启，提醒可能晚几分钟</span>
+            <span class="act">去开启</span>
+          </div>
+          <div class="statusrow">
+            <span class="si warn"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#i-battery"/></svg></span>
+            <span class="stx dim">建议把「糖记」加入电池优化白名单，避免省电延迟提醒</span>
+            <span class="act">去设置</span>
+          </div>
+        </div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-home"/></svg><span>今天</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg><span>趋势</span></div>
+        <div class="tabmid"><div class="plus"><svg viewBox="0 0 24 24"><use href="#i-plus"/></svg></div><div class="plabel">记录</div></div>
+        <div class="tab on"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg><span>提醒</span></div>
+        <div class="tab"><svg viewBox="0 0 24 24"><use href="#i-person"/></svg><span>我的</span></div>
+      </div>
+      <div class="homebar"><i></i></div>
+    </div></div>
+    <figcaption class="cap"><b>提醒（升级为一级 Tab）</b>
+      <ul><li>从"我的 → 提醒设置"两级前置为底栏一点即达（核心能力前置）</li>
+      <li>页面改为标准 Tab 形态（去掉返回栏，加页面标题）</li>
+      <li>时间大号数字块 / 模板芯片 / 三项可靠性检查保持不变</li></ul>
+    </figcaption>
+  </figure>
+
+</div>
+
+<script>
+/* 轻交互：仅用于审阅时预览按下/选中效果，不参与 App 实现 */
+document.querySelectorAll('.key').forEach(function(k){
+  k.addEventListener('pointerdown',function(){k.style.transform='scale(.96)';k.style.background='#E3EFE9'});
+  k.addEventListener('pointerup',function(){k.style.transform='';k.style.background=''});
+  k.addEventListener('pointerleave',function(){k.style.transform='';k.style.background=''});
+});
+document.querySelectorAll('.seg .s').forEach(function(s){
+  s.addEventListener('click',function(){
+    s.parentNode.querySelectorAll('.s').forEach(function(x){x.classList.remove('on')});
+    s.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>

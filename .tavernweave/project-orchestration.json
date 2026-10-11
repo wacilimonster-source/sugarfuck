@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "authoritySchema": "tavernweave/project-orchestration/v1",
+  "projectId": "sugarfather",
+  "title": "糖记·个人血糖记录 APP（安卓原生版）",
+  "profile": "single-blueprint",
+  "state": "automated-evidence",
+  "authorityFile": "总设计案.md",
+  "nextFile": "NEXT.md",
+  "blueprintPolicy": {
+    "masterFile": "项目实现步骤蓝图.md",
+    "maxDepth": 1,
+    "maxChildren": 0,
+    "runtimePersistentBlueprintBudget": 0,
+    "blueprints": [
+      {
+        "id": "BP-ROOT",
+        "path": "项目实现步骤蓝图.md",
+        "parentId": null,
+        "depth": 1,
+        "status": "candidate"
+      }
+    ]
+  },
+  "runtimeRefinementPolicy": {
+    "trigger": "observed-problem-or-failed-exit-condition",
+    "maxDepth": 1,
+    "maxOpenBranches": 1,
+    "persistent": false,
+    "mayExpandProductScope": false,
+    "mustReturnToParent": true
+  },
+  "runtimeRefinements": [],
+  "discussionDirections": [
+    {
+      "id": "DIR-platform",
+      "topic": "平台形态与承载面",
+      "level": "foundational",
+      "roundLimit": 4,
+      "roundsUsed": 1,
+      "status": "closed",
+      "decisionIds": [
+        "DEC-platform"
+      ]
+    },
+    {
+      "id": "DIR-record-scope",
+      "topic": "记录范围",
+      "level": "core",
+      "roundLimit": 3,
+      "roundsUsed": 1,
+      "status": "closed",
+      "decisionIds": [
+        "DEC-record-scope"
+      ]
+    },
+    {
+      "id": "DIR-stats",
+      "topic": "统计展示",
+      "level": "core",
+      "roundLimit": 3,
+      "roundsUsed": 1,
+      "status": "closed",
+      "decisionIds": [
+        "DEC-stats"
+      ]
+    },
+    {
+      "id": "DIR-backup",
+      "topic": "数据备份与同步",
+      "level": "foundational",
+      "roundLimit": 4,
+      "roundsUsed": 1,
+      "status": "closed",
+      "decisionIds": [
+        "DEC-backup"
+      ]
+    },
+    {
+      "id": "DIR-reminder",
+      "topic": "提醒方式",
+      "level": "standard",
+      "roundLimit": 2,
+      "roundsUsed": 1,
+      "status": "closed",
+      "decisionIds": [
+        "DEC-reminder"
+      ]
+    },
+    {
+      "id": "DIR-proposals",
+      "topic": "六项细节提案（目标范围/时段/单位/布局/技术栈/导出）",
+      "level": "core",
+      "roundLimit": 3,
+      "roundsUsed": 1,
+      "status": "closed",
+      "decisionIds": [
+        "DEC-targets",
+        "DEC-periods",
+        "DEC-unit",
+        "DEC-tabs",
+        "DEC-tech",
+        "DEC-export"
+      ]
+    },
+    {
+      "id": "DIR-android-pivot",
+      "topic": "R6 平台变更：小程序 → 安卓原生（含提醒与数据形态）",
+      "level": "foundational",
+      "roundLimit": 4,
+      "roundsUsed": 1,
+      "status": "closed",
+      "decisionIds": [
+        "DEC-android",
+        "DEC-local-data",
+        "DEC-notify"
+      ]
+    }
+  ],
+  "frontendDecision": {
+    "recommended": "independent-ui",
+    "fit": "suitable",
+    "reason": "单平台目标（安卓）+ 65+ 适老化个人自用；原生 Kotlin+Compose 解锁系统通知/文件分享/本地数据库，本机工具链可构建与模拟器自测",
+    "fallback": "Flutter（若未来需要 iOS）",
+    "reopenWhen": "需要 iOS 或家人远程查看（需云）时重议承载面",
+    "driverOverride": false,
+    "prototypeGateRequired": false,
+    "realHostGateRequired": true
+  },
+  "acceptance": {
+    "automated": "passed",
+    "staticPreview": "passed",
+    "realHost": "pending",
+    "driver": {
+      "status": "pending",
+      "source": "driver"
+    }
+  }
+}

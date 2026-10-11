@@ -1,0 +1,58 @@
+<view class="step-ind">{{stepText}}</view>
+
+<!-- 第 1 步：大号数字键盘输数值 -->
+<block wx:if="{{step === 1}}">
+  <view class="val-row">
+    <view class="val-display {{valPlaceholder ? 'placeholder' : ''}}">{{valDisplay}}</view>
+    <view class="val-side">
+      <view class="val-unit">mmol/L</view>
+      <view class="val-cap">血糖数值</view>
+    </view>
+  </view>
+  <view class="hint {{hint.cls}}">{{hint.text}}</view>
+  <view class="quick" wx:if="{{quickChips.length}}">
+    <view class="qchip" wx:for="{{quickChips}}" wx:key="v" data-v="{{item.v}}" bindtap="onQuick">{{item.t}}</view>
+  </view>
+  <view class="keypad">
+    <button class="key {{item.k === 'del' || item.k === 'dot' ? 'fn' : ''}}"
+            wx:for="{{keys}}" wx:key="k"
+            data-k="{{item.k}}" bindtap="onKey">{{item.l}}</button>
+  </view>
+  <button class="big-btn" disabled="{{!nextEnabled}}" bindtap="onNext">下一步：选时段</button>
+</block>
+
+<!-- 第 2 步：大按钮选时段后保存 -->
+<block wx:if="{{step === 2}}">
+  <button class="back-btn" bindtap="onBack">‹ 上一步，改数值</button>
+  <view class="sum-row">
+    <view class="sum-val">{{sumVal}}</view>
+    <view class="sum-unit">mmol/L</view>
+    <view class="sum-status ss-{{sumCls}}" wx:if="{{sumText}}">{{sumText}}</view>
+  </view>
+  <view class="sec-lab">测量时段（已按时间推荐，点一下就能改）</view>
+  <view class="period-grid">
+    <view class="pchip {{item.sel ? 'sel' : ''}}" wx:for="{{periods}}" wx:key="id"
+          data-pid="{{item.id}}" bindtap="onPeriod">
+      {{item.label}}
+      <text class="rec-flag" wx:if="{{item.rec}}">推荐</text>
+    </view>
+  </view>
+  <button class="big-btn" disabled="{{!saveEnabled}}" bindtap="onSave">保存</button>
+  <button class="fold-btn" bindtap="toggleMore">{{showMore ? '收起更多选项 ▴' : '更多选项 ▾　修改时间 / 写备注'}}</button>
+  <block wx:if="{{showMore}}">
+    <view class="sec-lab">测量时间（补记才需要改）</view>
+    <view class="time-row">
+      <view class="tt">{{timeText}}</view>
+      <picker mode="date" value="{{dateValue}}" end="{{maxDate}}" bindchange="onDate">
+        <view class="picker-val">改日期</view>
+      </picker>
+      <picker mode="time" value="{{timeValue}}" bindchange="onTime">
+        <view class="picker-val">改时间</view>
+      </picker>
+    </view>
+    <view class="sec-lab">备注（可不填）</view>
+    <input class="note-input" value="{{note}}" maxlength="200"
+           placeholder="例：吃了两个包子 / 散步 40 分钟" bindinput="onNote" />
+  </block>
+  <button class="del-btn" wx:if="{{isEdit}}" bindtap="onDelete">删除这条记录</button>
+</block>

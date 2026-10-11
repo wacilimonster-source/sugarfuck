@@ -1,0 +1,17 @@
+<view class="bar">
+  <view class="tab {{selected === 0 ? 'on' : ''}}" data-i="0" data-path="pages/today/today" bindtap="tapTab">
+    <view class="ico">⌂</view>
+    <view class="txt">今天</view>
+  </view>
+  <view class="tab {{selected === 1 ? 'on' : ''}}" data-i="1" data-path="pages/trend/trend" bindtap="tapTab">
+    <view class="ico">📈</view>
+    <view class="txt">趋势</view>
+  </view>
+  <view class="mid">
+    <view class="plus" bindtap="tapPlus">＋</view>
+  </view>
+  <view class="tab {{selected === 2 ? 'on' : ''}}" data-i="2" data-path="pages/mine/mine" bindtap="tapTab">
+    <view class="ico">👤</view>
+    <view class="txt">我的</view>
+  </view>
+</view>

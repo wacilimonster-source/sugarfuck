@@ -1,0 +1,22 @@
+{
+  "appid": "wx64bef796f17d9c86",
+  "compileType": "miniprogram",
+  "libVersion": "3.4.10",
+  "projectname": "sugarfather",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "enhance": true,
+    "ignoreUploadUnusedFiles": true
+  },
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  }
+}
