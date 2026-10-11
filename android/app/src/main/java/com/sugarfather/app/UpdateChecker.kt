@@ -39,16 +39,31 @@ object UpdateState {
  */
 object UpdateChecker {
 
-    private const val MANIFEST_URL =
-        "https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/version.json"
+    // 版本清单来源：① GitHub API（无 CDN 缓存，实时；匿名限流 60 次/时，个人使用足够）
+    //               ② raw.githubusercontent（5 分钟 CDN 缓存，作兜底）
+    private fun manifestSources(): List<Pair<String, Map<String, String>>> = listOf(
+        "https://api.github.com/repos/wacilimonster-source/sugarfuck/contents/version.json"
+            to mapOf("Accept" to "application/vnd.github.raw"),
+        "https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/version.json?t=${System.currentTimeMillis()}"
+            to emptyMap()
+    )
 
     /** 返回非空表示有新版本；网络错误返回 null 并写 UpdateState.error */
     suspend fun check(): UpdateInfo? = withContext(Dispatchers.IO) {
         UpdateState.checking = true
         UpdateState.error = null
         try {
-            val json = httpGetText("$MANIFEST_URL?t=${System.currentTimeMillis()}")
-            val o = JSONObject(json)
+            var obj: JSONObject? = null
+            var lastErr: Exception? = null
+            for ((url, headers) in manifestSources()) {
+                try {
+                    obj = JSONObject(httpGetText(url, headers))
+                    break
+                } catch (e: Exception) {
+                    lastErr = e
+                }
+            }
+            val o = obj ?: throw (lastErr ?: IllegalStateException("无法获取版本信息"))
             val code = o.optInt("versionCode", 0)
             val info = UpdateInfo(
                 versionCode = code,
@@ -118,14 +133,16 @@ object UpdateChecker {
         else -> e.message ?: "网络错误"
     }
 
-    private fun httpGetText(url: String): String {
+    private fun httpGetText(url: String, headers: Map<String, String> = emptyMap()): String {
         val c = (URL(url).openConnection() as HttpURLConnection).apply {
             connectTimeout = 8000
             readTimeout = 8000
             instanceFollowRedirects = true
             setRequestProperty("User-Agent", "SugarFather-Updater")
+            headers.forEach { (k, v) -> setRequestProperty(k, v) }
         }
         try {
+            if (c.responseCode !in 200..299) throw java.io.IOException("HTTP ${c.responseCode}")
             return c.inputStream.bufferedReader().use { it.readText() }
         } finally {
             c.disconnect()

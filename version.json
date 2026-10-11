@@ -1,8 +1,7 @@
 {
-  "versionCode": 99,
-  "versionName": "9.9",
-  "apkUrl": "https://ghfast.top/https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/releases/sugarfather-2.3.apk",
-  "apkUrlMirror": "https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/releases/sugarfather-2.3.apk",
-  "notes": "【测试】更新通道验证：这是一条测试更新说明",
-  "comment": "apkUrl 走国内可访问的 GitHub 加速代理（ghfast.top），apkUrlMirror 为官方地址；换代理只需改本文件，无需重新打包 App"
+  "versionCode": 5,
+  "versionName": "2.4",
+  "apkUrl": "https://ghfast.top/https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/releases/sugarfather-2.4.apk",
+  "apkUrlMirror": "https://raw.githubusercontent.com/wacilimonster-source/sugarfuck/main/releases/sugarfather-2.4.apk",
+  "notes": "修复更新检查：改用 GitHub API 实时获取版本信息；下载走国内可访问的加速通道。新增：应用内检查更新（首页更新卡片 + 我的页手动检查）"
 }
